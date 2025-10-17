@@ -84,10 +84,10 @@ npm install
 
 ### 3. Iniciar os serviços
 
-#### Opção A: Iniciar todos os serviços de uma vez (backend + frontend)
+#### Opção A: Iniciar TUDO de uma vez (backend + frontend) - RECOMENDADO ⭐
 
 ```bash
-npm run start:all
+npm run start:dev
 ```
 
 Isso iniciará:
@@ -100,7 +100,7 @@ Isso iniciará:
 #### Opção B: Iniciar apenas os serviços backend
 
 ```bash
-npm run start:dev
+npm run start:backend
 ```
 
 #### Opção C: Iniciar cada serviço separadamente (em terminais diferentes)
@@ -227,7 +227,8 @@ npm run build
 
 | Script                    | Descrição                                     |
 | ------------------------- | --------------------------------------------- |
-| `npm run start:dev`       | Inicia todos os serviços backend em modo dev  |
+| `npm run start:dev`       | Inicia TUDO (backend + frontend)              |
+| `npm run start:backend`   | Inicia apenas os serviços backend             |
 | `npm run start:gateway`   | Inicia apenas API Gateway                     |
 | `npm run start:votes`     | Inicia apenas Votes Service                   |
 | `npm run start:aggregate` | Inicia apenas Aggregate Service               |

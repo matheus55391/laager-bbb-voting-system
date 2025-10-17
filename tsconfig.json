@@ -5,6 +5,15 @@
     "references": [
         {
             "path": "./apps/frontend"
+        },
+        {
+            "path": "./apps/api/e2e/aggregate-service-e2e"
+        },
+        {
+            "path": "./apps/api/e2e/votes-service-e2e"
+        },
+        {
+            "path": "./apps/api/e2e/api-gateway-e2e"
         }
     ]
 }

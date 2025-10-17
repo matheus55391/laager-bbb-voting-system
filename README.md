@@ -131,16 +131,16 @@ npm run docker:up
 
 ### 4. Inicie os serviços
 
-**Opção A: Todos os serviços (backend + frontend)**
+**Opção A: TUDO de uma vez (backend + frontend) - RECOMENDADO ⭐**
 
 ```bash
-npm run start:all
+npm run start:dev
 ```
 
 **Opção B: Apenas backend**
 
 ```bash
-npm run start:dev
+npm run start:backend
 ```
 
 **Opção C: Apenas frontend**
@@ -187,14 +187,14 @@ laager-bbb-voting-system/
 
 ### Desenvolvimento
 
-| Script                    | Descrição                       |
-| ------------------------- | ------------------------------- |
-| `npm run start:all`       | Inicia todos os serviços        |
-| `npm run start:dev`       | Inicia serviços backend         |
-| `npm run start:web`       | Inicia frontend                 |
-| `npm run start:gateway`   | Inicia apenas API Gateway       |
-| `npm run start:votes`     | Inicia apenas Votes Service     |
-| `npm run start:aggregate` | Inicia apenas Aggregate Service |
+| Script                    | Descrição                                   |
+| ------------------------- | ------------------------------------------- |
+| `npm run start:dev`       | ⭐ Inicia TUDO (backend + frontend)         |
+| `npm run start:backend`   | Inicia apenas serviços backend              |
+| `npm run start:web`       | Inicia frontend                             |
+| `npm run start:gateway`   | Inicia apenas API Gateway                   |
+| `npm run start:votes`     | Inicia apenas Votes Service                 |
+| `npm run start:aggregate` | Inicia apenas Aggregate Service             |
 
 ### Build
 
