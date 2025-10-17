@@ -187,14 +187,14 @@ laager-bbb-voting-system/
 
 ### Desenvolvimento
 
-| Script                    | Descrição                                   |
-| ------------------------- | ------------------------------------------- |
-| `npm run start:dev`       | ⭐ Inicia TUDO (backend + frontend)         |
-| `npm run start:backend`   | Inicia apenas serviços backend              |
-| `npm run start:web`       | Inicia frontend                             |
-| `npm run start:gateway`   | Inicia apenas API Gateway                   |
-| `npm run start:votes`     | Inicia apenas Votes Service                 |
-| `npm run start:aggregate` | Inicia apenas Aggregate Service             |
+| Script                    | Descrição                           |
+| ------------------------- | ----------------------------------- |
+| `npm run start:dev`       | ⭐ Inicia TUDO (backend + frontend) |
+| `npm run start:backend`   | Inicia apenas serviços backend      |
+| `npm run start:web`       | Inicia frontend                     |
+| `npm run start:gateway`   | Inicia apenas API Gateway           |
+| `npm run start:votes`     | Inicia apenas Votes Service         |
+| `npm run start:aggregate` | Inicia apenas Aggregate Service     |
 
 ### Build
 
