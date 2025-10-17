@@ -1,0 +1,26 @@
+{
+  "name": "@laager-bbb-voting-system/votes-service-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@laager-bbb-voting-system/votes-service"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "votes-service-e2e/jest.config.ts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "@laager-bbb-voting-system/votes-service:build",
+          "@laager-bbb-voting-system/votes-service:serve"
+        ]
+      }
+    }
+  }
+}

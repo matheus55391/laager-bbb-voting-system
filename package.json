@@ -4,11 +4,15 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve api-gateway",
-    "start:dev": "nx serve api-gateway --watch",
+    "start:dev": "concurrently --names \"API,VOTES,AGGREGATE\" --prefix-colors \"blue,green,yellow\" \"nx serve api-gateway\" \"nx serve votes-service\" \"nx serve aggregate-service\"",
     "start:debug": "nx serve api-gateway --inspect",
     "start:prod": "node dist/apps/api-gateway/main.js",
+    "start:gateway": "nx serve api-gateway",
+    "start:votes": "nx serve votes-service",
+    "start:aggregate": "nx serve aggregate-service",
     "build": "nx build api-gateway",
     "build:prod": "nx build api-gateway --configuration=production",
+    "build:all": "nx run-many --target=build --projects=api-gateway,votes-service,aggregate-service",
     "test": "nx test api-gateway",
     "test:watch": "nx test api-gateway --watch",
     "test:cov": "nx test api-gateway --coverage",
@@ -39,6 +43,8 @@
     "@swc/jest": "~0.2.38",
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
+    "@types/winston": "^2.4.4",
+    "concurrently": "^9.2.1",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
@@ -54,14 +60,24 @@
     "webpack-cli": "^5.1.4"
   },
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "dependencies": {
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
+    "@nestjs/microservices": "^11.1.6",
     "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.2.1",
+    "amqp-connection-manager": "^5.0.0",
+    "amqplib": "^0.10.9",
     "axios": "^1.6.0",
+    "cache-manager": "^7.2.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "ioredis": "^5.8.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "winston": "^3.18.3"
   }
 }
