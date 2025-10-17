@@ -1,21 +1,29 @@
 {
-  "compilerOptions": {
-    "composite": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "importHelpers": true,
-    "isolatedModules": true,
-    "lib": ["es2022"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "es2022",
-    "customConditions": ["@laager-bbb-voting-system/source"]
-  }
+    "compilerOptions": {
+        "composite": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": true,
+        "importHelpers": true,
+        "isolatedModules": true,
+        "lib": ["es2022"],
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "noEmitOnError": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "target": "es2022",
+        "customConditions": ["@laager-bbb-voting-system/source"],
+        "baseUrl": ".",
+        "paths": {
+            "@api/aggregate-service/*": ["apps/api/aggregate-service/src/*"],
+            "@api/api-gateway/*": ["apps/api/api-gateway/src/*"],
+            "@api/votes-service/*": ["apps/api/votes-service/src/*"],
+            "@frontend/*": ["apps/frontend/src/*"],
+            "@shared/*": ["libs/shared/src/*"]
+        }
+    }
 }

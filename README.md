@@ -1,109 +1,295 @@
-# LaagerBbbVotingSystem
+# 🎯 BBB Voting System - Sistema de Votação
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Sistema de votação em tempo real para Big Brother Brasil, desenvolvido com arquitetura de microserviços, NestJS, RabbitMQ e Next.js.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+[![Nx](https://img.shields.io/badge/Built%20with-Nx-143055?style=flat-square&logo=nx)](https://nx.dev)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat-square&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com)
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 📋 Índice
 
-## Generate a library
+-   [Sobre o Projeto](#-sobre-o-projeto)
+-   [Arquitetura](#-arquitetura)
+-   [Tecnologias](#-tecnologias)
+-   [Como Executar](#-como-executar)
+-   [Documentação](#-documentação)
+-   [Estrutura do Projeto](#-estrutura-do-projeto)
+-   [Scripts Disponíveis](#-scripts-disponíveis)
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
+## 🎯 Sobre o Projeto
 
-## Run tasks
+Sistema completo de votação com:
 
-To build the library use:
+-   ✅ **API REST** para recebimento de votos
+-   ✅ **Processamento assíncrono** com filas RabbitMQ
+-   ✅ **Microserviços** independentes e escaláveis
+-   ✅ **Cache** para performance em resultados
+-   ✅ **Frontend moderno** com Next.js 15
+-   ✅ **Documentação Swagger** automática
+-   ✅ **Docker Compose** para infraestrutura
 
-```sh
-npx nx build pkg1
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+## 🏗️ Arquitetura
 
 ```
-npx nx release
+┌──────────────┐
+│   Frontend   │  Next.js (porta 4200)
+│  (Browser)   │
+└──────┬───────┘
+       │ HTTP
+       ▼
+┌──────────────┐
+│ API Gateway  │  NestJS (porta 3000)
+│   + Swagger  │
+└──────┬───────┘
+       │ RabbitMQ
+       ▼
+┌──────────────┐
+│ Votes Queue  │  votes_queue
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│    Votes     │  Microserviço de processamento
+│   Service    │
+└──────┬───────┘
+       │ RabbitMQ
+       ▼
+┌──────────────┐
+│Aggregate Queue aggregate_queue
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│  Aggregate   │  Microserviço de agregação
+│   Service    │  + Cache in-memory
+└──────────────┘
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+### Componentes
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Componente            | Responsabilidade                  | Porta |
+| --------------------- | --------------------------------- | ----- |
+| **Frontend**          | Interface web para votação        | 4200  |
+| **API Gateway**       | Receber requisições HTTP          | 3000  |
+| **Votes Service**     | Processar votos                   | -     |
+| **Aggregate Service** | Contabilizar e cachear resultados | -     |
+| **RabbitMQ**          | Message broker                    | 5672  |
 
-## Keep TypeScript project references up to date
+## 🚀 Tecnologias
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+### Backend
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+-   **[NestJS](https://nestjs.com)** 11.0 - Framework Node.js
+-   **[RabbitMQ](https://www.rabbitmq.com)** - Message broker
+-   **[Swagger/OpenAPI](https://swagger.io)** - Documentação de API
+-   **TypeScript** 5.9 - Superset JavaScript
 
-```sh
-npx nx sync
+### Frontend
+
+-   **[Next.js](https://nextjs.org)** 15.2 - React Framework
+-   **[React](https://react.dev)** 19.2 - UI Library
+-   **[Tailwind CSS](https://tailwindcss.com)** - Utility-first CSS
+-   **[shadcn/ui](https://ui.shadcn.com)** - Componentes React
+-   **[TanStack Query](https://tanstack.com/query)** - Data fetching
+-   **[React Hook Form](https://react-hook-form.com)** - Gerenciamento de formulários
+-   **[Zod](https://zod.dev)** - Validação de schemas
+
+### DevOps & Tools
+
+-   **[Nx](https://nx.dev)** 21.6 - Monorepo tooling
+-   **[Docker](https://www.docker.com)** - Containerização
+-   **[PostgreSQL](https://www.postgresql.org)** - Banco de dados (infraestrutura)
+-   **Jest** - Testing framework
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+
+-   Node.js 18+
+-   Docker e Docker Compose
+-   npm ou yarn
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/matheus55391/laager-bbb-voting-system.git
+cd laager-bbb-voting-system
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+### 2. Instale as dependências
 
-```sh
-npx nx sync:check
+```bash
+npm install
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+### 3. Suba a infraestrutura (RabbitMQ, PostgreSQL)
 
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+```bash
+npm run docker:up
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+### 4. Inicie os serviços
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Opção A: Todos os serviços (backend + frontend)**
 
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+```bash
+npm run start:all
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+**Opção B: Apenas backend**
 
-## Install Nx Console
+```bash
+npm run start:dev
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+**Opção C: Apenas frontend**
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+npm run start:web
+```
 
-## Useful links
+### 5. Acesse as aplicações
 
-Learn more:
+-   🌐 **Frontend**: http://localhost:4200
+-   🔌 **API**: http://localhost:3000/api
+-   📚 **Swagger**: http://localhost:3000/api/docs
+-   🐰 **RabbitMQ Management**: http://localhost:15672 (laager_user / laager_password)
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📚 Documentação
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Documentação detalhada disponível na pasta `/docs`:
+
+-   **[SETUP.md](./docs/SETUP.md)** - Guia completo de instalação e uso
+-   **[IMPLEMENTATION_SUMMARY.md](./docs/IMPLEMENTATION_SUMMARY.md)** - Resumo da implementação
+-   **[PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - Estrutura detalhada do projeto
+
+## 📁 Estrutura do Projeto
+
+```
+laager-bbb-voting-system/
+├── apps/
+│   ├── api/                      # Backend - Microserviços
+│   │   ├── api-gateway/          # REST API (porta 3000)
+│   │   ├── votes-service/        # Processador de votos
+│   │   ├── aggregate-service/    # Agregador de resultados
+│   │   └── e2e/                  # Testes End-to-End
+│   │       ├── api-gateway-e2e/
+│   │       ├── votes-service-e2e/
+│   │       └── aggregate-service-e2e/
+│   └── frontend/                 # Next.js App (porta 4200)
+├── docs/                         # Documentação
+├── docker-compose.yml            # Infraestrutura Docker
+└── package.json                  # Scripts e dependências
+```
+
+## 🛠️ Scripts Disponíveis
+
+### Desenvolvimento
+
+| Script                    | Descrição                       |
+| ------------------------- | ------------------------------- |
+| `npm run start:all`       | Inicia todos os serviços        |
+| `npm run start:dev`       | Inicia serviços backend         |
+| `npm run start:web`       | Inicia frontend                 |
+| `npm run start:gateway`   | Inicia apenas API Gateway       |
+| `npm run start:votes`     | Inicia apenas Votes Service     |
+| `npm run start:aggregate` | Inicia apenas Aggregate Service |
+
+### Build
+
+| Script              | Descrição                  |
+| ------------------- | -------------------------- |
+| `npm run build:all` | Build de todos os serviços |
+| `npm run build`     | Build do API Gateway       |
+| `npm run build:web` | Build do frontend          |
+
+### Docker
+
+| Script                | Descrição       |
+| --------------------- | --------------- |
+| `npm run docker:up`   | Sobe containers |
+| `npm run docker:down` | Para containers |
+| `npm run docker:logs` | Visualiza logs  |
+
+### Testes
+
+| Script             | Descrição           |
+| ------------------ | ------------------- |
+| `npm test`         | Roda testes         |
+| `npm run test:cov` | Testes com coverage |
+| `npm run test:e2e` | Testes E2E          |
+
+## 📊 Exemplo de Uso
+
+### Via Frontend (http://localhost:4200)
+
+1. Acesse a interface web
+2. Selecione um participante
+3. Clique em "Votar"
+4. Veja os resultados atualizados
+
+### Via API (cURL)
+
+**Registrar voto:**
+
+```bash
+curl -X POST http://localhost:3000/api/votes \
+  -H "Content-Type: application/json" \
+  -d '{"participantId": "participant-123"}'
+```
+
+**Consultar resultados:**
+
+```bash
+curl http://localhost:3000/api/votes/results
+```
+
+## 🔍 Monitoramento
+
+-   **RabbitMQ Management**: http://localhost:15672
+-   **PgAdmin**: http://localhost:8080
+-   **Swagger API Docs**: http://localhost:3000/api/docs
+
+## 🧪 Testes
+
+```bash
+# Testes unitários
+npm test
+
+# Testes com coverage
+npm run test:cov
+
+# Testes E2E
+npm run test:e2e
+```
+
+## 📈 Melhorias Futuras
+
+-   [ ] Implementar Redis para cache distribuído
+-   [ ] Persistência de votos no PostgreSQL
+-   [ ] Autenticação JWT
+-   [ ] Rate limiting
+-   [ ] WebSocket para atualização em tempo real
+-   [ ] Gráficos interativos no frontend
+-   [ ] Containerização dos serviços Node.js
+-   [ ] CI/CD pipeline
+-   [ ] Monitoring com Prometheus/Grafana
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
+## 👨‍💻 Autor
+
+**Matheus**
+
+-   GitHub: [@matheus55391](https://github.com/matheus55391)
+
+---
+
+⭐ **Desenvolvido com [Nx](https://nx.dev)**
