@@ -1,0 +1,54 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "jsx": "preserve",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "target": "ES2017",
+        "module": "esnext",
+        "skipLibCheck": true,
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "moduleResolution": "bundler",
+        "noEmit": true,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "useDefineForClassFields": true,
+        "skipDefaultLibCheck": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noFallthroughCasesInSwitch": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "incremental": true
+    },
+    "include": [
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        "next-env.d.ts",
+        "../../dist/apps/web/types/**/*.ts",
+        "postcss.config.mjs"
+    ],
+    "exclude": [
+        "node_modules",
+        "jest.config.ts",
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/*.spec.tsx",
+        "**/*.test.tsx"
+    ]
+}
