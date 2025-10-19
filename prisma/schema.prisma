@@ -1,0 +1,48 @@
+// Laager BBB Voting System - Database Schema
+// Sistema de votação para Big Brother Brasil
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// Model para os participantes/candidatos do BBB
+model Participant {
+    id        String   @id @default(uuid())
+    name      String   @db.VarChar(255)
+    nickname  String?  @db.VarChar(100)
+    photoUrl  String?  @db.Text
+    isActive  Boolean  @default(true)
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    // Relacionamento com votos
+    votes Vote[]
+
+    @@index([isActive])
+    @@map("participants")
+}
+
+// Model para os votos individuais (fonte única de verdade)
+model Vote {
+    id            String   @id @default(uuid())
+    participantId String   @map("participant_id")
+    userId        String?  @map("user_id") @db.VarChar(255)
+    ipAddress     String?  @map("ip_address") @db.Inet
+    userAgent     String?  @map("user_agent") @db.Text
+    createdAt     DateTime @default(now()) @map("created_at")
+
+    // Relacionamento com participante
+    participant Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+    @@index([participantId])
+    @@index([createdAt])
+    @@index([userId])
+    @@index([ipAddress])
+    @@map("votes")
+}
