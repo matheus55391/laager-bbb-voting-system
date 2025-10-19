@@ -14,6 +14,20 @@ interface VotingResultsProps {
 }
 
 export function VotingResults({ stats }: VotingResultsProps) {
+    // Proteção contra dados undefined ou inválidos
+    if (!stats || !stats.participants || stats.participants.length === 0) {
+        return (
+            <Card className="bg-white/95 backdrop-blur-sm p-8 shadow-2xl">
+                <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                    Resultado Parcial
+                </h2>
+                <p className="text-center text-gray-600">
+                    Nenhum voto registrado ainda. Seja o primeiro a votar!
+                </p>
+            </Card>
+        );
+    }
+
     return (
         <Card className="bg-white/95 backdrop-blur-sm p-8 shadow-2xl">
             <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">

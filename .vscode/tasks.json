@@ -1,0 +1,170 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start: API Gateway",
+            "type": "shell",
+            "command": "nx serve api-gateway",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Start: Votes Service",
+            "type": "shell",
+            "command": "nx serve vote",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Start: Aggregate Service",
+            "type": "shell",
+            "command": "nx serve aggregate-service",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Start: Web (Frontend)",
+            "type": "shell",
+            "command": "nx serve web",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Start: All Services",
+            "dependsOn": [
+                "Start: API Gateway",
+                "Start: Votes Service",
+                "Start: Web (Frontend)"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start: Backend Only",
+            "dependsOn": ["Start: API Gateway", "Start: Votes Service"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Docker: Start Services",
+            "type": "shell",
+            "command": "docker-compose up -d",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Docker: Stop Services",
+            "type": "shell",
+            "command": "docker-compose down",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Docker: View Logs",
+            "type": "shell",
+            "command": "docker-compose logs -f",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Prisma: Generate Client",
+            "type": "shell",
+            "command": "npm run prisma:generate",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Prisma: Migrate Dev",
+            "type": "shell",
+            "command": "npm run prisma:migrate",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Prisma: Studio",
+            "type": "shell",
+            "command": "npm run prisma:studio",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Build: All Projects",
+            "type": "shell",
+            "command": "npm run build:all",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Test: E2E All",
+            "type": "shell",
+            "command": "nx run-many --target=e2e --all",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

@@ -5,21 +5,8 @@ import { useRouter } from 'next/navigation';
 import { VotingCard } from '@/components/voting/voting-card';
 import { Button } from '@/components/ui/button';
 import { useVoteMutation } from '@/queries/vote/use-vote-mutation';
+import { useParticipantsQuery } from '@/queries/vote/use-participants-query';
 import { toast } from 'sonner';
-
-// Mock de participantes - será substituído pela API
-const PARTICIPANTS = [
-    {
-        id: '1',
-        name: 'Participante 1',
-        imageUrl: '/images/participant-1.jpg',
-    },
-    {
-        id: '2',
-        name: 'Participante 2',
-        imageUrl: '/images/participant-2.jpg',
-    },
-];
 
 export default function Home() {
     const router = useRouter();
@@ -27,6 +14,7 @@ export default function Home() {
         string | null
     >(null);
     const voteMutation = useVoteMutation();
+    const { data: participants, isLoading } = useParticipantsQuery();
 
     const handleVote = async () => {
         if (!selectedParticipant) {
@@ -46,6 +34,34 @@ export default function Home() {
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 flex items-center justify-center">
+                <p className="text-white text-2xl">
+                    Carregando participantes...
+                </p>
+            </div>
+        );
+    }
+
+    if (!participants || participants.length === 0) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-white text-2xl mb-4">
+                        Nenhum participante disponível
+                    </p>
+                    <Button
+                        onClick={() => window.location.reload()}
+                        className="bg-white text-red-600"
+                    >
+                        Recarregar
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 flex flex-col items-center justify-center p-4">
             <div className="max-w-6xl w-full">
@@ -59,10 +75,14 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    {PARTICIPANTS.map((participant) => (
+                    {participants.map((participant) => (
                         <VotingCard
                             key={participant.id}
-                            participant={participant}
+                            participant={{
+                                id: participant.id,
+                                name: participant.name,
+                                imageUrl: `/images/participant-placeholder.jpg`,
+                            }}
                             isSelected={selectedParticipant === participant.id}
                             onSelect={() =>
                                 setSelectedParticipant(participant.id)

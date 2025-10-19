@@ -1,32 +1,36 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { votingApi } from '../../services/voting.service';
+import type {
+    SubmitVoteRequest,
+    SubmitVoteResponse,
+} from '../../services/voting.service.dto';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
-interface VoteDto {
-    participantId: string;
-}
-
-interface VoteResponse {
-    success: boolean;
+interface ApiErrorResponse {
     message: string;
-}
-
-async function submitVote(data: VoteDto): Promise<VoteResponse> {
-    const response = await fetch('http://localhost:3001/api/votes', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        throw new Error('Erro ao registrar voto');
-    }
-
-    return response.json();
+    statusCode?: number;
 }
 
 export function useVoteMutation() {
+    const queryClient = useQueryClient();
+
     return useMutation({
-        mutationFn: submitVote,
+        mutationFn: (data: SubmitVoteRequest) => votingApi.submitVote(data),
+        onSuccess: (data: SubmitVoteResponse) => {
+            // Invalida as queries para atualizar os resultados
+            queryClient.invalidateQueries({ queryKey: ['voting-results'] });
+
+            toast.success('Voto registrado com sucesso!', {
+                description: `ID do voto: ${data.voteId}`,
+            });
+        },
+        onError: (error: AxiosError<ApiErrorResponse>) => {
+            const errorMessage =
+                error.response?.data?.message || 'Erro ao registrar voto';
+            toast.error('Erro ao votar', {
+                description: errorMessage,
+            });
+        },
     });
 }

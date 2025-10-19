@@ -1,29 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-
-interface VotingStats {
-    totalVotes: number;
-    participants: Array<{
-        id: string;
-        name: string;
-        votes: number;
-        percentage: number;
-    }>;
-}
-
-async function fetchVotingStats(): Promise<VotingStats> {
-    const response = await fetch('http://localhost:3001/api/votes/stats');
-
-    if (!response.ok) {
-        throw new Error('Erro ao buscar estatísticas');
-    }
-
-    return response.json();
-}
+import { votingApi } from '../../services/voting.service';
 
 export function useVotingStatsQuery() {
     return useQuery({
-        queryKey: ['voting-stats'],
-        queryFn: fetchVotingStats,
-        refetchInterval: 5000, // Atualiza a cada 5 segundos
+        queryKey: ['voting-results'],
+        queryFn: () => votingApi.getFormattedResults(),
+        // refetchInterval: 5000, // Atualiza a cada 5 segundos
+        // staleTime: 3000, // Considera os dados obsoletos após 3 segundos
+        refetchInterval: 30000, // Atualiza a cada 30 segundos (reduz logs)
+        staleTime: 20000, // Considera os dados obsoletos após 20 segundos
+        refetchOnWindowFocus: false, // Não atualiza ao focar na janela
     });
 }

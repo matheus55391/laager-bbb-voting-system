@@ -4,16 +4,12 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { DashboardStats } from '@/components/dashboard/dashboard-stats';
 import { VotesChart } from '@/components/dashboard/votes-chart';
-import { VotesPerHourChart } from '@/components/dashboard/votes-per-hour-chart';
 import { useVotingStatsQuery } from '@/queries/vote/use-voting-stats-query';
-import { useVotesPerHourQuery } from '@/queries/vote/use-votes-per-hour-query';
 import { ArrowLeft } from 'lucide-react';
 
 export default function DashboardPage() {
     const router = useRouter();
     const { data: stats, isLoading: isLoadingStats } = useVotingStatsQuery();
-    const { data: votesPerHour, isLoading: isLoadingVotesPerHour } =
-        useVotesPerHourQuery();
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -46,11 +42,6 @@ export default function DashboardPage() {
                     <div className="space-y-8">
                         <DashboardStats stats={stats} />
                         <VotesChart stats={stats} />
-                        {!isLoadingVotesPerHour &&
-                            votesPerHour &&
-                            votesPerHour.length > 0 && (
-                                <VotesPerHourChart data={votesPerHour} />
-                            )}
                     </div>
                 ) : (
                     <div className="text-center text-gray-600 text-xl py-12">

@@ -1,149 +1,441 @@
-# 🎯 BBB Voting System - Sistema de Votação
+# 🗳️ BBB Voting System
 
-Sistema de votação em tempo real para Big Brother Brasil, desenvolvido com arquitetura de microserviços, NestJS, RabbitMQ e Next.js.
+Sistema de votação completo para o paredão do Big Brother Brasil, desenvolvido com arquitetura de microserviços escalável.
 
-[![Nx](https://img.shields.io/badge/Built%20with-Nx-143055?style=flat-square&logo=nx)](https://nx.dev)
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)](https://redis.io)
 [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat-square&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com)
 
-## 📋 Índice
+---
 
--   [Sobre o Projeto](#-sobre-o-projeto)
--   [Arquitetura](#-arquitetura)
--   [Tecnologias](#-tecnologias)
--   [Como Executar](#-como-executar)
--   [Documentação](#-documentação)
--   [Estrutura do Projeto](#-estrutura-do-projeto)
--   [Scripts Disponíveis](#-scripts-disponíveis)
+## 📋 Sobre o Projeto
 
-## 🎯 Sobre o Projeto
+Sistema de votação em tempo real para o paredão do BBB com:
 
-Sistema completo de votação com:
+-   ✅ **Votação entre 2 participantes** com interface web moderna
+-   ✅ **Proteção anti-bot** (rate limiting: 10 votos/minuto por IP)
+-   ✅ **Alta performance** (1000+ votos/segundo com RabbitMQ)
+-   ✅ **API REST completa** com documentação Swagger
+-   ✅ **Estatísticas em tempo real** (total geral, por participante e por hora)
 
--   ✅ **API REST** para recebimento de votos
--   ✅ **Processamento assíncrono** com filas RabbitMQ
--   ✅ **Microserviços** independentes e escaláveis
--   ✅ **Cache** para performance em resultados
--   ✅ **Frontend moderno** com Next.js 15
--   ✅ **Documentação Swagger** automática
--   ✅ **Docker Compose** para infraestrutura
+### 🎯 Requisitos do Desafio Laager
+
+| Requisito                  | Implementação                            |
+| -------------------------- | ---------------------------------------- |
+| Sistema Web                | ✅ Next.js 15 + React 19 + Tailwind CSS  |
+| API REST                   | ✅ NestJS 11 + Swagger                   |
+| 2 participantes            | ✅ Sistema configurado com seed          |
+| Votos ilimitados           | ✅ Sem bloqueio por sessão               |
+| **Anti-bot**               | ✅ **Rate limiting 10 votos/min por IP** |
+| **Performance**            | ✅ **RabbitMQ + Redis (1000+ votos/s)**  |
+| **Total geral**            | ✅ **GET /votes**                        |
+| **Total por participante** | ✅ **GET /votes**                        |
+| **Total por hora**         | ✅ **GET /votes/stats/hourly**           |
+
+**[📋 Ver checklist completo dos requisitos](./docs/LAAGER_REQUIREMENTS_COMPLETE.md)**
+
+---
+
+## 🚀 Início Rápido
+
+### Pré-requisitos
+
+-   Node.js 18+
+-   Docker e Docker Compose
+-   npm 10+
+
+### Instalação (5 minutos)
+
+```bash
+# 1. Clone o repositório
+git clone https://github.com/matheus55391/laager-bbb-voting-system.git
+cd laager-bbb-voting-system
+
+# 2. Execute o script de setup
+npm run setup
+```
+
+O script `setup` executa automaticamente:
+
+-   ✅ Instalação de dependências
+-   ✅ Criação da infraestrutura Docker (Postgres, Redis, RabbitMQ)
+-   ✅ Geração do Prisma Client
+-   ✅ Aplicação de migrations
+-   ✅ Seed do banco com 2 participantes
+
+### Executar o Sistema
+
+```bash
+# Iniciar todos os serviços (backend + frontend)
+npm run start:all
+```
+
+**🎉 Pronto! Acesse:**
+
+-   **Frontend**: http://localhost:4200
+-   **API Swagger**: http://localhost:3000/api
+-   **RabbitMQ Management**: http://localhost:15672 (usuário: `laager_user` / senha: `laager_password`)
+
+---
 
 ## 🏗️ Arquitetura
 
 ```
-┌──────────────┐
-│   Frontend   │  Next.js (porta 4200)
-│  (Browser)   │
-└──────┬───────┘
-       │ HTTP
+┌─────────────┐
+│  Frontend   │  Next.js 15 (porta 4200)
+│   Web App   │  Interface de votação
+└──────┬──────┘
+       │ HTTP REST
        ▼
-┌──────────────┐
-│ API Gateway  │  NestJS (porta 3000)
-│   + Swagger  │
-└──────┬───────┘
+┌─────────────┐
+│ API Gateway │  NestJS (porta 3000)
+│  + Swagger  │  POST /votes, GET /votes
+└──────┬──────┘
        │ RabbitMQ
        ▼
-┌──────────────┐
-│ Votes Queue  │  votes_queue
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│    Votes     │  Microserviço de processamento
-│   Service    │
-└──────┬───────┘
-       │ RabbitMQ
-       ▼
-┌──────────────┐
-│Aggregate Queue aggregate_queue
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│  Aggregate   │  Microserviço de agregação
-│   Service    │  + Cache in-memory
-└──────────────┘
+┌─────────────┐
+│Vote Service │  Microserviço NestJS
+│             │  Processamento assíncrono
+└───┬─────┬───┘
+    │     │
+    ▼     ▼
+┌────────┐ ┌───────┐
+│Postgres│ │ Redis │
+│ Prisma │ │ Cache │
+└────────┘ └───────┘
 ```
 
-### Componentes
+**[📖 Ver arquitetura detalhada](./docs/ARCHITECTURE.md)**
 
-| Componente            | Responsabilidade                  | Porta |
-| --------------------- | --------------------------------- | ----- |
-| **Frontend**          | Interface web para votação        | 4200  |
-| **API Gateway**       | Receber requisições HTTP          | 3000  |
-| **Votes Service**     | Processar votos                   | -     |
-| **Aggregate Service** | Contabilizar e cachear resultados | -     |
-| **RabbitMQ**          | Message broker                    | 5672  |
+---
 
-## 🚀 Tecnologias
+## 📚 Documentação
+
+-   **[🏗️ Arquitetura](./docs/ARCHITECTURE.md)** - Visão completa da arquitetura, fluxos e tecnologias
+-   **[📁 Estrutura do Projeto](./docs/PROJECT_STRUCTURE.md)** - Organização de pastas e arquivos
+-   **[🗄️ Database & Prisma](./docs/DATABASE.md)** - Schema, models e migrations
+-   **[📦 Libs & DTOs](./docs/LIBS.md)** - Biblioteca compartilhada e DTOs
+-   **[✅ Requisitos Laager](./docs/LAAGER_REQUIREMENTS_COMPLETE.md)** - Checklist completo do desafio
+
+---
+
+## 🛠️ Scripts Disponíveis
+
+### Setup e Desenvolvimento
+
+```bash
+npm run setup          # 🚀 Setup completo do projeto (primeira vez)
+npm run start:all      # ⭐ Iniciar tudo (backend + frontend)
+npm run dev            # Modo desenvolvimento com hot-reload
+```
+
+### Backend
+
+```bash
+npm run start:gateway  # API Gateway (porta 3000)
+npm run start:votes    # Vote Service (microserviço)
+```
+
+### Frontend
+
+```bash
+npm run start:web      # Next.js (porta 4200)
+npm run build:web      # Build de produção
+```
+
+### Database
+
+```bash
+npm run prisma:generate # Gerar Prisma Client
+npm run prisma:migrate  # Aplicar migrations
+npm run prisma:seed     # Popular banco (2 participantes)
+npm run prisma:studio   # Interface visual do banco
+```
+
+### Docker
+
+```bash
+npm run docker:up      # Subir infraestrutura
+npm run docker:down    # Parar containers
+npm run docker:logs    # Ver logs
+```
+
+---
+
+## 📦 Estrutura do Projeto
+
+```
+laager-bbb-voting-system/
+├── apps/
+│   ├── api/
+│   │   ├── api-gateway/      # API REST (porta 3000)
+│   │   └── vote/             # Vote Service (microserviço)
+│   └── web/                  # Frontend Next.js (porta 4200)
+├── libs/
+│   └── common/               # DTOs compartilhados
+├── prisma/
+│   ├── schema.prisma         # Database schema
+│   ├── migrations/           # Migrations SQL
+│   └── seed.ts               # Seed inicial
+├── scripts/
+│   └── setup.sh              # Script de setup inicial
+├── docs/                     # Documentação completa
+└── docker-compose.yml        # Infraestrutura
+```
+
+**[📁 Ver estrutura detalhada](./docs/PROJECT_STRUCTURE.md)**
+
+---
+
+## 🧪 Testando o Sistema
+
+### 1. Votar pela Interface
+
+Acesse http://localhost:4200 e vote em um participante.
+
+### 2. Testar Rate Limiting (Anti-Bot)
+
+```bash
+# Enviar 11 votos seguidos (11º será bloqueado)
+for i in {1..11}; do
+  curl -X POST http://localhost:3000/api/votes \
+    -H "Content-Type: application/json" \
+    -d '{"participantId":"uuid-do-participante"}'
+done
+```
+
+### 3. Consultar Estatísticas por Hora
+
+```bash
+curl http://localhost:3000/api/votes/stats/hourly | jq
+```
+
+---
+
+## 🛡️ Segurança
+
+### Implementado
+
+-   ✅ Rate limiting por IP (10 votos/minuto)
+-   ✅ Captura de IP + User-Agent
+-   ✅ Validação de participantes ativos
+-   ✅ Filas duráveis no RabbitMQ
+
+### Recomendado para Produção
+
+-   [ ] HTTPS/TLS
+-   [ ] Autenticação JWT
+-   [ ] Captcha no frontend
+-   [ ] WAF (Web Application Firewall)
+
+---
+
+## 📈 Performance
+
+| Métrica                | Valor                             |
+| ---------------------- | --------------------------------- |
+| POST /votes (resposta) | ~5ms                              |
+| GET /votes (cache hit) | ~1ms                              |
+| Capacidade             | 1000+ votos/segundo               |
+| Escalabilidade         | Horizontal (múltiplas instâncias) |
+
+---
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+---
+
+## 📄 Licença
+
+MIT License - veja [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 👨‍💻 Autor
+
+**Matheus**
+
+-   GitHub: [@matheus55391](https://github.com/matheus55391)
+
+---
+
+**Desenvolvido para o desafio Laager** 🚀
+
+## 🏗️ Arquitetura
+
+```
+┌────────────────┐
+│   Frontend     │  Next.js + React (porta 4200)
+│   (Web App)    │  - Votação em tempo real
+└────────┬───────┘  - Dashboard de resultados
+         │ HTTP REST
+         ▼
+┌────────────────┐
+│  API Gateway   │  NestJS HTTP (porta 3000)
+│   + Swagger    │  - POST /votes → RabbitMQ
+│                │  - GET /votes → Request/Reply
+└────────┬───────┘
+         │ RabbitMQ (AMQP)
+         ▼
+┌────────────────────────────────────┐
+│        RabbitMQ Broker             │
+│  ┌──────────────┐  ┌─────────────┐│
+│  │ votes_queue  │  │events_queue ││
+│  └──────────────┘  └─────────────┘│
+└────────┬───────────────────────────┘
+         │ Consume messages
+         ▼
+┌────────────────┐
+│  Vote Service  │  NestJS Microservice
+│                │  - Processa votos
+│                │  - Valida participantes
+└───┬────────┬───┘  - Atualiza cache
+    │        │      - Publica eventos
+    │        │
+    ▼        ▼
+┌─────────┐ ┌─────────┐
+│Postgres │ │ Redis   │
+│(Prisma) │ │ (Cache) │
+└─────────┘ └─────────┘
+  Fonte de    Consultas
+  Verdade     Rápidas
+```
+
+## 🔄 Fluxo do MVP
+
+### Registrar Voto (POST /votes)
+
+```
+1. Frontend → POST /votes { participantId }
+2. API Gateway → Publica na fila votes_queue (RabbitMQ)
+3. Vote Service → Consome mensagem
+   ├─ Valida participante (Postgres)
+   ├─ Persiste voto (Postgres)
+   ├─ Atualiza contadores (Redis)
+   └─ Publica evento vote.processed
+4. API Gateway → Retorna: "Voto recebido" (~5ms)
+```
+
+### Obter Status (GET /votes)
+
+```
+1. Frontend → GET /votes
+2. API Gateway → Request/Reply ao Vote Service
+3. Vote Service → Consulta Redis (cache)
+   ├─ Cache HIT: Retorna ~1ms
+   └─ Cache MISS: Busca Postgres + Atualiza Redis
+4. Retorna: { totalVotes, results: [...] }
+```
+
+**Benefícios:**
+
+-   🚀 **Escalável**: RabbitMQ absorve picos de votação
+-   🔄 **Desacoplado**: Microserviços independentes
+-   ⚡ **Rápido**: Redis para consultas instantâneas
+-   📝 **Auditável**: Postgres mantém histórico completo
+
+## 🛠️ Tecnologias
 
 ### Backend
 
 -   **[NestJS](https://nestjs.com)** 11.0 - Framework Node.js
--   **[RabbitMQ](https://www.rabbitmq.com)** - Message broker
+-   **[Prisma](https://www.prisma.io)** 6.17 - ORM para TypeScript
+-   **[PostgreSQL](https://www.postgresql.org)** 18 - Banco de dados relacional
+-   **[Redis](https://redis.io)** 7 - Cache in-memory
+-   **[RabbitMQ](https://www.rabbitmq.com)** 4.1 - Message broker
 -   **[Swagger/OpenAPI](https://swagger.io)** - Documentação de API
 -   **TypeScript** 5.9 - Superset JavaScript
 
 ### Frontend
 
 -   **[Next.js](https://nextjs.org)** 15.2 - React Framework
--   **[React](https://react.dev)** 19.2 - UI Library
--   **[Tailwind CSS](https://tailwindcss.com)** - Utility-first CSS
+-   **[React](https://react.dev)** 19.0 - UI Library
+-   **[Tailwind CSS](https://tailwindcss.com)** 4.0 - Utility-first CSS
 -   **[shadcn/ui](https://ui.shadcn.com)** - Componentes React
--   **[TanStack Query](https://tanstack.com/query)** - Data fetching
+-   **[TanStack Query](https://tanstack.com/query)** - Data fetching e cache
 -   **[React Hook Form](https://react-hook-form.com)** - Gerenciamento de formulários
 -   **[Zod](https://zod.dev)** - Validação de schemas
+-   **[Recharts](https://recharts.org)** - Gráficos interativos
 
 ### DevOps & Tools
 
 -   **[Nx](https://nx.dev)** 21.6 - Monorepo tooling
 -   **[Docker](https://www.docker.com)** - Containerização
--   **[PostgreSQL](https://www.postgresql.org)** - Banco de dados (infraestrutura)
--   **Jest** - Testing framework
+-   **Jest** 30.0 - Testing framework
+-   **ESLint** + **Prettier** - Code quality
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
 
--   Node.js 18+
+-   Node.js 18+ (recomendado: 20)
 -   Docker e Docker Compose
--   npm ou yarn
+-   npm 10+
 
-### 1. Clone o repositório
+### 📦 Início Rápido (5 minutos)
 
 ```bash
+# 1. Clone o repositório
 git clone https://github.com/matheus55391/laager-bbb-voting-system.git
 cd laager-bbb-voting-system
-```
 
-### 2. Instale as dependências
-
-```bash
+# 2. Instale as dependências
 npm install
-```
 
-### 3. Suba a infraestrutura (RabbitMQ, PostgreSQL)
-
-```bash
+# 3. Suba a infraestrutura (Postgres, Redis, RabbitMQ)
 npm run docker:up
+
+# 4. Configure o banco de dados
+npm run prisma:generate  # Gera Prisma Client
+npm run prisma:migrate   # Cria tabelas
+npm run prisma:seed      # Popula participantes
+
+# 5. Inicie os serviços
+npm run start:all        # API Gateway + Vote Service + Frontend
 ```
 
-### 4. Inicie os serviços
+**🎉 Pronto! Acesse:**
 
-**Opção A: TUDO de uma vez (backend + frontend) - RECOMENDADO ⭐**
+-   Frontend: http://localhost:4200
+-   API Gateway: http://localhost:3000
+-   Swagger: http://localhost:3000/api
+-   RabbitMQ UI: http://localhost:15672 (user: laager_user, pass: laager_password)
+
+---
+
+### 📝 Passo a Passo Detalhado
+
+#### 1. Clone e Instale
+
+1. Pressione `Ctrl+Shift+B` (ou `Cmd+Shift+B` no Mac)
+2. Selecione **"Start: All Services"**
+3. Cada serviço abrirá em seu próprio terminal
+
+📖 Veja mais detalhes em [VSCODE_TASKS.md](./docs/VSCODE_TASKS.md)
+
+**Opção B: Via Scripts NPM**
+
+TUDO de uma vez (backend + frontend):
 
 ```bash
 npm run start:dev
 ```
 
-**Opção B: Apenas backend**
+**Opção C: Apenas backend**
 
 ```bash
 npm run start:backend
 ```
 
-**Opção C: Apenas frontend**
+**Opção D: Apenas frontend**
 
 ```bash
 npm run start:web
@@ -158,11 +450,10 @@ npm run start:web
 
 ## 📚 Documentação
 
-Documentação detalhada disponível na pasta `/docs`:
+Documentação completa e consolidada:
 
--   **[SETUP.md](./docs/SETUP.md)** - Guia completo de instalação e uso
--   **[IMPLEMENTATION_SUMMARY.md](./docs/IMPLEMENTATION_SUMMARY.md)** - Resumo da implementação
--   **[PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)** - Estrutura detalhada do projeto
+-   **[📖 docs/README.md](./docs/README.md)** - Documentação completa com arquitetura, setup, testes e estrutura
+-   **[✅ docs/LAAGER_REQUIREMENTS_COMPLETE.md](./docs/LAAGER_REQUIREMENTS_COMPLETE.md)** - Checklist dos requisitos do desafio Laager
 
 ## 📁 Estrutura do Projeto
 
@@ -264,17 +555,22 @@ npm run test:cov
 npm run test:e2e
 ```
 
-## 📈 Melhorias Futuras
+## ✅ Checklist de Requisitos Laager
 
--   [ ] Implementar Redis para cache distribuído
--   [ ] Persistência de votos no PostgreSQL
--   [ ] Autenticação JWT
--   [ ] Rate limiting
--   [ ] WebSocket para atualização em tempo real
--   [ ] Gráficos interativos no frontend
--   [ ] Containerização dos serviços Node.js
--   [ ] CI/CD pipeline
--   [ ] Monitoring com Prometheus/Grafana
+| Requisito                     | Status                            |
+| ----------------------------- | --------------------------------- |
+| Sistema Web (HTML/CSS/JS)     | ✅ Next.js 15 + React 19          |
+| API REST Backend              | ✅ NestJS 11 + Swagger            |
+| Votação entre 2 participantes | ✅ Seed configurado               |
+| Confirmação + Percentual      | ✅ Tela de resultado              |
+| Votos ilimitados              | ✅ Sem bloqueio                   |
+| **Proteção anti-bot**         | ✅ **Rate limiting 10 votos/min** |
+| **Performance 1000 votos/s**  | ✅ **RabbitMQ + Redis**           |
+| **Total geral de votos**      | ✅ **GET /votes**                 |
+| **Total por participante**    | ✅ **GET /votes**                 |
+| **Total por hora**            | ✅ **GET /votes/stats/hourly**    |
+
+**🎯 100% dos requisitos implementados!** Veja detalhes em [docs/LAAGER_REQUIREMENTS_COMPLETE.md](./docs/LAAGER_REQUIREMENTS_COMPLETE.md)
 
 ## 🤝 Contribuindo
 

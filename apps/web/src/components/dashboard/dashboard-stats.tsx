@@ -14,9 +14,13 @@ interface DashboardStatsProps {
 }
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
-    const leader = stats.participants.reduce((prev, current) =>
-        prev.votes > current.votes ? prev : current
-    );
+    // Proteção: verifica se há participantes antes de calcular o líder
+    const leader =
+        stats.participants && stats.participants.length > 0
+            ? stats.participants.reduce((prev, current) =>
+                  prev.votes > current.votes ? prev : current
+              )
+            : null;
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -43,12 +47,20 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
                         <p className="text-sm text-gray-600">
                             Participante Líder
                         </p>
-                        <p className="text-xl font-bold text-gray-900">
-                            {leader.name}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            {leader.percentage.toFixed(1)}% dos votos
-                        </p>
+                        {leader ? (
+                            <>
+                                <p className="text-xl font-bold text-gray-900">
+                                    {leader.name}
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    {leader.percentage.toFixed(1)}% dos votos
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-xl font-bold text-gray-500">
+                                Nenhum voto ainda
+                            </p>
+                        )}
                     </div>
                 </div>
             </Card>
