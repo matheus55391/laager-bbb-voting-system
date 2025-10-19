@@ -17,10 +17,10 @@
         "baseUrl": ".",
         "paths": {
             "@api/aggregate-service/*": ["apps/api/aggregate-service/src/*"],
-            "@api/api-gateway/*": ["apps/api/api-gateway/src/*"],
-            "@api/votes-service/*": ["apps/api/votes-service/src/*"],
-            "@web/*": ["apps/web/src/*"],
-            "@shared/*": ["libs/shared/src/*"]
+            "@bbvote/common": ["libs/src/index.ts"],
+            "@laager-bbb-voting-system/common": ["libs/common/src/index.ts"],
+            "@shared/*": ["libs/shared/src/*"],
+            "@web/*": ["apps/web/src/*"]
         }
     },
     "exclude": ["node_modules", "tmp"]

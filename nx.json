@@ -30,7 +30,17 @@
             "options": {
                 "targetName": "test"
             },
-            "exclude": ["apps/api/e2e/**/*", "apps/web/**/*"]
+            "exclude": [
+                "apps/api/e2e/**/*",
+                "apps/web/**/*",
+                "apps/api/vote-e2e/**/*"
+            ]
+        },
+        {
+            "plugin": "@nx/eslint/plugin",
+            "options": {
+                "targetName": "lint"
+            }
         }
     ],
     "targetDefaults": {
