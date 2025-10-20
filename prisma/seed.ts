@@ -5,11 +5,9 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('🌱 Seeding database...');
 
-    // Limpar dados existentes
     await prisma.vote.deleteMany();
     await prisma.participant.deleteMany();
 
-    // Criar participantes do BBB 25 (exemplo)
     const participants = await prisma.participant.createMany({
         data: [
             {

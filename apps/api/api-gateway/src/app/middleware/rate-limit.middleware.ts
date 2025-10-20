@@ -8,18 +8,6 @@ import {
 import { Request, Response, NextFunction } from 'express';
 import Redis from 'ioredis';
 
-/**
- * Middleware de Rate Limiting para proteção anti-bot
- *
- * Requisito Laager: "Os usuários podem votar quantas vezes quiserem,
- * entretanto, a produção do programa não gostaria de receber votos
- * oriundos de uma máquina e sim votos de pessoas."
- *
- * Estratégia:
- * - Máximo de 10 votos por IP a cada 1 minuto
- * - Usa Redis para contadores distribuídos
- * - Retorna 429 (Too Many Requests) se limite excedido
- */
 @Injectable()
 export class RateLimitMiddleware implements NestMiddleware {
     private readonly logger = new Logger(RateLimitMiddleware.name);
@@ -28,7 +16,6 @@ export class RateLimitMiddleware implements NestMiddleware {
     private readonly WINDOW_SIZE_SECONDS = 60;
 
     constructor() {
-        // Conectar ao Redis (mesma instância usada pelo Vote Service)
         this.redisClient = new Redis({
             host: process.env['REDIS_HOST'] || 'localhost',
             port: parseInt(process.env['REDIS_PORT'] || '6379'),
@@ -44,12 +31,10 @@ export class RateLimitMiddleware implements NestMiddleware {
     }
 
     async use(req: Request, res: Response, next: NextFunction) {
-        // Aplicar rate limiting apenas para POST /votes
         if (req.method !== 'POST' || !req.path.includes('/votes')) {
             return next();
         }
 
-        // Extrair IP do usuário
         const ip =
             (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
             req.ip ||
@@ -62,7 +47,6 @@ export class RateLimitMiddleware implements NestMiddleware {
             if (error instanceof HttpException) {
                 throw error;
             }
-            // Se Redis estiver indisponível, permitir o voto (fail-open)
             this.logger.warn(
                 `Rate limit check failed for IP ${ip}, allowing request: ${
                     (error as Error).message
@@ -76,15 +60,12 @@ export class RateLimitMiddleware implements NestMiddleware {
         const key = `rate_limit:vote:${ip}`;
 
         try {
-            // Incrementar contador
             const count = await this.redisClient.incr(key);
 
-            // Se é a primeira vez, definir TTL
             if (count === 1) {
                 await this.redisClient.expire(key, this.WINDOW_SIZE_SECONDS);
             }
 
-            // Verificar se excedeu o limite
             if (count > this.MAX_VOTES_PER_MINUTE) {
                 const ttl = await this.redisClient.ttl(key);
                 this.logger.warn(

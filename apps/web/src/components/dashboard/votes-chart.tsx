@@ -14,7 +14,6 @@ interface VotesChartProps {
 }
 
 export function VotesChart({ stats }: VotesChartProps) {
-    // Proteção contra array vazio ou undefined
     const hasParticipants = stats.participants && stats.participants.length > 0;
 
     return (

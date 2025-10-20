@@ -14,7 +14,6 @@ interface DashboardStatsProps {
 }
 
 export function DashboardStats({ stats }: DashboardStatsProps) {
-    // Proteção: verifica se há participantes antes de calcular o líder
     const leader =
         stats.participants && stats.participants.length > 0
             ? stats.participants.reduce((prev, current) =>

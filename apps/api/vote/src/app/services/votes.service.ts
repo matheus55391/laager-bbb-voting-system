@@ -21,21 +21,12 @@ export class VotesService {
         @Inject('EVENTS_SERVICE') private readonly eventsClient: ClientProxy
     ) {}
 
-    /**
-     * Processa um voto recebido da fila RabbitMQ
-     * Fluxo:
-     * 1. Valida o participante
-     * 2. Persiste no Postgres
-     * 3. Atualiza contadores no Redis
-     * 4. Publica evento vote.processed
-     */
     async processVote(voteDto: VoteDto): Promise<VoteResponseDto> {
         this.logger.log(
             `Processing vote for participant: ${voteDto.participantId}`
         );
 
         try {
-            // 1. Validar se o participante existe e está ativo
             const participant = await this.prisma.participant.findUnique({
                 where: { id: voteDto.participantId },
             });
@@ -52,12 +43,10 @@ export class VotesService {
                 );
             }
 
-            // 2. Persistir voto no Postgres (fonte única de verdade)
             const vote = await this.prisma.vote.create({
                 data: {
                     participantId: voteDto.participantId,
                     userId: voteDto.userId,
-                    // Capturar IP e User-Agent para análise anti-bot
                     ipAddress: voteDto.ipAddress || null,
                     userAgent: voteDto.userAgent || null,
                 },
@@ -65,7 +54,6 @@ export class VotesService {
 
             this.logger.log(`Vote persisted in database: ${vote.id}`);
 
-            // 3. Atualizar contadores no Redis para consultas rápidas
             await this.redis.incrementVoteCount(voteDto.participantId);
             await this.redis.incrementTotalVotes();
 
@@ -73,14 +61,12 @@ export class VotesService {
                 `Redis counters updated for participant: ${voteDto.participantId}`
             );
 
-            // 4. Publicar evento vote.processed para outros serviços (Stats, Dashboard, etc)
             this.eventsClient.emit('vote.processed', {
                 voteId: vote.id,
                 participantId: vote.participantId,
                 timestamp: vote.createdAt.toISOString(),
             });
 
-            // 5. Retornar resposta
             return {
                 message: 'Voto registrado com sucesso',
                 voteId: vote.id,
@@ -95,36 +81,24 @@ export class VotesService {
         }
     }
 
-    /**
-     * Obtém o status completo da votação
-     * Estratégia:
-     * 1. Tenta buscar do Redis (cache rápido)
-     * 2. Se cache miss, consulta Postgres
-     * 3. Atualiza Redis com os dados do Postgres
-     * 4. Calcula percentuais e retorna
-     */
     async getVotingStatus(): Promise<ResultsResponseDto> {
         this.logger.log('Fetching voting status...');
 
         try {
-            // 1. Buscar participantes ativos
             const participants = await this.prisma.participant.findMany({
                 where: { isActive: true },
                 select: { id: true, name: true },
             });
 
-            // 2. Buscar contadores do Redis primeiro
             let totalVotes = await this.redis.getTotalVotes();
             const results: ParticipantResult[] = [];
 
-            // Se não há dados no Redis, buscar do Postgres
             if (totalVotes === 0) {
                 this.logger.log('Cache miss - fetching from database...');
                 await this.syncRedisFromDatabase();
                 totalVotes = await this.redis.getTotalVotes();
             }
 
-            // 3. Montar resultados por participante
             for (const participant of participants) {
                 const votes = await this.redis.getVoteCount(participant.id);
                 const percentage =
@@ -138,7 +112,6 @@ export class VotesService {
                 });
             }
 
-            // 4. Ordenar por número de votos (decrescente)
             results.sort((a, b) => b.votes - a.votes);
 
             return {
@@ -155,14 +128,9 @@ export class VotesService {
         }
     }
 
-    /**
-     * Sincroniza contadores do Redis com dados do Postgres
-     * Usado quando há cache miss ou para recuperação de falhas
-     */
     private async syncRedisFromDatabase(): Promise<void> {
         this.logger.log('Syncing Redis from database...');
 
-        // Contar votos por participante no banco
         const voteCounts = await this.prisma.vote.groupBy({
             by: ['participantId'],
             _count: {
@@ -170,7 +138,6 @@ export class VotesService {
             },
         });
 
-        // Limpar Redis e repovoar com dados corretos
         await this.redis.clearAllVotes();
 
         let totalVotes = 0;
@@ -184,15 +151,10 @@ export class VotesService {
         this.logger.log(`Redis synced: ${totalVotes} total votes`);
     }
 
-    /**
-     * Obtém estatísticas de votos agrupadas por hora
-     * Requisito do desafio Laager: consultar total de votos por hora
-     */
     async getHourlyStats(): Promise<HourlyStatsResponseDto> {
         this.logger.log('Fetching hourly voting statistics...');
 
         try {
-            // Query raw SQL para agrupar votos por hora usando DATE_TRUNC
             const hourlyData = await this.prisma.$queryRaw<
                 Array<{ hour: Date; votes: bigint }>
             >`
@@ -204,13 +166,11 @@ export class VotesService {
                 ORDER BY hour DESC
             `;
 
-            // Converter BigInt para número e formatar resposta
             const hourlyStats: HourlyStatsDto[] = hourlyData.map((row) => ({
                 hour: row.hour.toISOString(),
                 votes: Number(row.votes),
             }));
 
-            // Calcular total geral
             const totalVotes = hourlyStats.reduce(
                 (sum, stat) => sum + stat.votes,
                 0

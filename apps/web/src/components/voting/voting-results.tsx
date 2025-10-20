@@ -14,7 +14,6 @@ interface VotingResultsProps {
 }
 
 export function VotingResults({ stats }: VotingResultsProps) {
-    // Proteção contra dados undefined ou inválidos
     if (!stats || !stats.participants || stats.participants.length === 0) {
         return (
             <Card className="bg-white/95 backdrop-blur-sm p-8 shadow-2xl">

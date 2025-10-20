@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { votingApi } from '../../services/voting.service';
-import type {
-    SubmitVoteRequest,
-    SubmitVoteResponse,
-} from '../../services/voting.service.dto';
+import type { SubmitVoteRequest } from '../../services/voting.service.dto';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
 
@@ -17,13 +14,9 @@ export function useVoteMutation() {
 
     return useMutation({
         mutationFn: (data: SubmitVoteRequest) => votingApi.submitVote(data),
-        onSuccess: (data: SubmitVoteResponse) => {
-            // Invalida as queries para atualizar os resultados
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['voting-results'] });
-
-            toast.success('Voto registrado com sucesso!', {
-                description: `ID do voto: ${data.voteId}`,
-            });
+            queryClient.invalidateQueries({ queryKey: ['participants'] });
         },
         onError: (error: AxiosError<ApiErrorResponse>) => {
             const errorMessage =

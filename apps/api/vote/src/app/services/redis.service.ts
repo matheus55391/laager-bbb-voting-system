@@ -45,7 +45,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         return this.client;
     }
 
-    // Métodos auxiliares para cache de votos
     async getVoteCount(participantId: string): Promise<number> {
         const count = await this.client.get(`votes:${participantId}`);
         return count ? parseInt(count, 10) : 0;
