@@ -19,6 +19,7 @@ export interface GetResultsResponse {
 
 export interface VoteResult {
     participantId: string;
+    name: string;
     votes: number;
     percentage: number;
 }

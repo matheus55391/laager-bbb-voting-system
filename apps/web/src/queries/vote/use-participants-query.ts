@@ -9,7 +9,7 @@ export function useParticipantsQuery() {
             // Transforma os resultados em lista de participantes
             return results.results.map((result) => ({
                 id: result.participantId,
-                name: `Participante ${result.participantId.substring(0, 8)}`, // Placeholder até termos nomes reais
+                name: result.name,
                 votes: result.votes,
                 percentage: result.percentage,
             }));

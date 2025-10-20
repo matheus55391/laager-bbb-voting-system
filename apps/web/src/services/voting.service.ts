@@ -31,7 +31,7 @@ export const votingApi = {
             totalVotes: response.totalVotes,
             participants: response.results.map((result) => ({
                 id: result.participantId,
-                name: `Participante ${result.participantId.substring(0, 8)}`,
+                name: result.name,
                 votes: result.votes,
                 percentage: result.percentage,
                 imageUrl: undefined,

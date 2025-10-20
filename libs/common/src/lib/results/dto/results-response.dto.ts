@@ -8,6 +8,12 @@ export class ParticipantResult {
     participantId!: string;
 
     @ApiProperty({
+        description: 'Nome do participante',
+        example: 'João Silva',
+    })
+    name!: string;
+
+    @ApiProperty({
         description: 'Número de votos recebidos',
         example: 1500,
     })

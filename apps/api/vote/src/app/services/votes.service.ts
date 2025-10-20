@@ -132,6 +132,7 @@ export class VotesService {
 
                 results.push({
                     participantId: participant.id,
+                    name: participant.name,
                     votes,
                     percentage: parseFloat(percentage.toFixed(2)),
                 });
