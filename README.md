@@ -82,6 +82,17 @@ npm run start:all
 
 ## 🏗️ Arquitetura
 
+### Visão Geral
+
+O sistema utiliza uma **arquitetura de microserviços event-driven** com foco em alta performance e escalabilidade.
+
+![Diagrama de Arquitetura](./docs/architecture-diagram.svg)
+
+**[📖 Documentação completa da arquitetura](./docs/ARCHITECTURE.md)**
+
+<details>
+<summary>📊 Ver diagrama simplificado (ASCII)</summary>
+
 ```
 ┌─────────────┐
 │  Frontend   │  Next.js 15 (porta 4200)
@@ -93,7 +104,7 @@ npm run start:all
 │ API Gateway │  NestJS (porta 3000)
 │  + Swagger  │  POST /votes, GET /votes
 └──────┬──────┘
-       │ RabbitMQ
+       │ RabbitMQ (Async)
        ▼
 ┌─────────────┐
 │Vote Service │  Microserviço NestJS
@@ -107,7 +118,18 @@ npm run start:all
 └────────┘ └───────┘
 ```
 
-**[📖 Ver arquitetura detalhada](./docs/ARCHITECTURE.md)**
+</details>
+
+### Componentes Principais
+
+| Componente       | Tecnologia   | Porta | Função                             |
+| ---------------- | ------------ | ----- | ---------------------------------- |
+| **Frontend**     | Next.js 15   | 4200  | Interface web de votação           |
+| **API Gateway**  | NestJS 11    | 3000  | REST API + Rate Limiting + Swagger |
+| **Vote Service** | NestJS 11    | -     | Processamento assíncrono de votos  |
+| **PostgreSQL**   | Postgres 18  | 5432  | Banco de dados (source of truth)   |
+| **Redis**        | Redis 7      | 6379  | Cache + Rate limiting              |
+| **RabbitMQ**     | RabbitMQ 4.1 | 5672  | Message broker (filas assíncronas) |
 
 ---
 
@@ -267,51 +289,9 @@ MIT License - veja [LICENSE](LICENSE) para detalhes.
 
 ---
 
-**Desenvolvido para o desafio Laager** 🚀
+## 🔄 Fluxos de Operação
 
-## 🏗️ Arquitetura
-
-```
-┌────────────────┐
-│   Frontend     │  Next.js + React (porta 4200)
-│   (Web App)    │  - Votação em tempo real
-└────────┬───────┘  - Dashboard de resultados
-         │ HTTP REST
-         ▼
-┌────────────────┐
-│  API Gateway   │  NestJS HTTP (porta 3000)
-│   + Swagger    │  - POST /votes → RabbitMQ
-│                │  - GET /votes → Request/Reply
-└────────┬───────┘
-         │ RabbitMQ (AMQP)
-         ▼
-┌────────────────────────────────────┐
-│        RabbitMQ Broker             │
-│  ┌──────────────┐  ┌─────────────┐│
-│  │ votes_queue  │  │events_queue ││
-│  └──────────────┘  └─────────────┘│
-└────────┬───────────────────────────┘
-         │ Consume messages
-         ▼
-┌────────────────┐
-│  Vote Service  │  NestJS Microservice
-│                │  - Processa votos
-│                │  - Valida participantes
-└───┬────────┬───┘  - Atualiza cache
-    │        │      - Publica eventos
-    │        │
-    ▼        ▼
-┌─────────┐ ┌─────────┐
-│Postgres │ │ Redis   │
-│(Prisma) │ │ (Cache) │
-└─────────┘ └─────────┘
-  Fonte de    Consultas
-  Verdade     Rápidas
-```
-
-## 🔄 Fluxo do MVP
-
-### Registrar Voto (POST /votes)
+### 1. Registrar Voto (POST /votes)
 
 ```
 1. Frontend → POST /votes { participantId }
@@ -324,7 +304,7 @@ MIT License - veja [LICENSE](LICENSE) para detalhes.
 4. API Gateway → Retorna: "Voto recebido" (~5ms)
 ```
 
-### Obter Status (GET /votes)
+### 2. Obter Resultados (GET /votes)
 
 ```
 1. Frontend → GET /votes
@@ -335,12 +315,15 @@ MIT License - veja [LICENSE](LICENSE) para detalhes.
 4. Retorna: { totalVotes, results: [...] }
 ```
 
-**Benefícios:**
+### Benefícios da Arquitetura
 
--   🚀 **Escalável**: RabbitMQ absorve picos de votação
--   🔄 **Desacoplado**: Microserviços independentes
--   ⚡ **Rápido**: Redis para consultas instantâneas
--   📝 **Auditável**: Postgres mantém histórico completo
+-   🚀 **Escalável** - RabbitMQ absorve picos de votação, permite múltiplas instâncias
+-   🔄 **Desacoplado** - Microserviços independentes, fácil manutenção
+-   ⚡ **Rápido** - Redis para consultas instantâneas (~1ms)
+-   📝 **Auditável** - Postgres mantém histórico completo de todos os votos
+-   🛡️ **Resiliente** - Filas duráveis garantem que nenhum voto seja perdido
+
+---
 
 ## 🛠️ Tecnologias
 

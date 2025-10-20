@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1400" height="1000" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style>
+            .title {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 26px;
+                font-weight: bold;
+                fill: #1a202c;
+            }
+
+            .subtitle {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 16px;
+                font-weight: 600;
+                fill: #2d3748;
+            }
+
+            .text {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                fill: #2d3748;
+            }
+
+            .small-text {
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 11px;
+                fill: #4a5568;
+            }
+
+            .frontend {
+                fill: #ebf8ff;
+                stroke: #3182ce;
+                stroke-width: 2;
+            }
+
+            .gateway {
+                fill: #fff5f5;
+                stroke: #e53e3e;
+                stroke-width: 2;
+            }
+
+            .microservice {
+                fill: #f0fff4;
+                stroke: #38a169;
+                stroke-width: 2;
+            }
+
+            .database {
+                fill: #faf5ff;
+                stroke: #805ad5;
+                stroke-width: 2;
+            }
+
+            .messaging {
+                fill: #fffaf0;
+                stroke: #dd6b20;
+                stroke-width: 2;
+            }
+
+            .cache {
+                fill: #fffaf0;
+                stroke: #ed8936;
+                stroke-width: 2;
+            }
+
+            .infrastructure {
+                fill: #f7fafc;
+                stroke: #718096;
+                stroke-width: 2;
+            }
+
+            .arrow {
+                stroke: #4a5568;
+                stroke-width: 2.5;
+                fill: none;
+                marker-end: url(#arrowhead);
+            }
+
+            .data-flow {
+                stroke: #ed8936;
+                stroke-width: 2.5;
+                fill: none;
+                marker-end: url(#arrowhead-orange);
+                stroke-dasharray: 5, 5;
+            }
+
+            .async-flow {
+                stroke: #dd6b20;
+                stroke-width: 2.5;
+                fill: none;
+                marker-end: url(#arrowhead-orange);
+                stroke-dasharray: 8, 4;
+            }
+        </style>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568" />
+        </marker>
+        <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#dd6b20" />
+        </marker>
+
+        <!-- Gradient Definitions -->
+        <linearGradient id="grad-frontend" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#ebf8ff;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#bee3f8;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-gateway" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#fff5f5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#fed7d7;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-microservice" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#f0fff4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#c6f6d5;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-database" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#faf5ff;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#e9d8fd;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-messaging" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#fffaf0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#feebc8;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad-infrastructure" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#f7fafc;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1400" height="1000" fill="#ffffff" />
+
+    <!-- Title -->
+    <text x="700" y="30" text-anchor="middle" class="title">BBB Voting System Architecture</text>
+    <text x="700" y="55" text-anchor="middle" class="subtitle">High-Performance Microservices Platform</text>
+
+    <!-- Frontend Layer -->
+    <rect x="50" y="100" width="280" height="140" rx="10" fill="url(#grad-frontend)" stroke="#3182ce"
+        stroke-width="2" />
+    <text x="190" y="125" text-anchor="middle" class="subtitle" fill="#2c5282">Frontend Layer</text>
+    <text x="190" y="150" text-anchor="middle" class="text">Next.js 15 Web Application</text>
+    <text x="190" y="170" text-anchor="middle" class="small-text">React 19 • TypeScript • Tailwind CSS</text>
+    <text x="190" y="185" text-anchor="middle" class="small-text">TanStack Query • Axios • shadcn/ui</text>
+    <text x="190" y="200" text-anchor="middle" class="small-text">Páginas: Votação • Resultado • Dashboard</text>
+    <text x="190" y="220" text-anchor="middle" class="small-text">Port: 4200</text>
+
+    <!-- API Gateway -->
+    <rect x="450" y="100" width="300" height="140" rx="10" fill="url(#grad-gateway)" stroke="#e53e3e"
+        stroke-width="2" />
+    <text x="600" y="125" text-anchor="middle" class="subtitle" fill="#c53030">API Gateway</text>
+    <text x="600" y="150" text-anchor="middle" class="text">NestJS HTTP Gateway</text>
+    <text x="600" y="170" text-anchor="middle" class="small-text">REST API • Swagger Docs • CORS</text>
+    <text x="600" y="185" text-anchor="middle" class="small-text">Rate Limiting (10 votos/min por IP)</text>
+    <text x="600" y="200" text-anchor="middle" class="small-text">IP Tracking • User-Agent Capture</text>
+    <text x="600" y="215" text-anchor="middle" class="small-text">Fire-and-Forget Pattern</text>
+    <text x="600" y="230" text-anchor="middle" class="small-text">Port: 3000</text>
+
+    <!-- RabbitMQ -->
+    <rect x="900" y="100" width="250" height="140" rx="10" fill="url(#grad-messaging)" stroke="#dd6b20"
+        stroke-width="2" />
+    <text x="1025" y="125" text-anchor="middle" class="subtitle" fill="#c05621">Message Broker</text>
+    <text x="1025" y="150" text-anchor="middle" class="text">RabbitMQ</text>
+    <text x="1025" y="170" text-anchor="middle" class="small-text">Fila: votes_queue (durable)</text>
+    <text x="1025" y="185" text-anchor="middle" class="small-text">Event-Driven Architecture</text>
+    <text x="1025" y="200" text-anchor="middle" class="small-text">Async Processing • Decoupling</text>
+    <text x="1025" y="215" text-anchor="middle" class="small-text">Management UI: 15672</text>
+    <text x="1025" y="230" text-anchor="middle" class="small-text">Port: 5672 (AMQP)</text>
+
+    <!-- Vote Microservice -->
+    <rect x="900" y="320" width="250" height="160" rx="10" fill="url(#grad-microservice)" stroke="#38a169"
+        stroke-width="2" />
+    <text x="1025" y="345" text-anchor="middle" class="subtitle" fill="#2f855a">Vote Microservice</text>
+    <text x="1025" y="370" text-anchor="middle" class="text">NestJS Microservice</text>
+    <text x="1025" y="390" text-anchor="middle" class="small-text">Processar Votos (RabbitMQ)</text>
+    <text x="1025" y="405" text-anchor="middle" class="small-text">Validar Participantes</text>
+    <text x="1025" y="420" text-anchor="middle" class="small-text">Persistir em PostgreSQL</text>
+    <text x="1025" y="435" text-anchor="middle" class="small-text">Atualizar Cache Redis</text>
+    <text x="1025" y="450" text-anchor="middle" class="small-text">Estatísticas por Hora</text>
+    <text x="1025" y="465" text-anchor="middle" class="small-text">Consumidor Assíncrono</text>
+
+    <!-- Data Layer -->
+    <text x="400" y="310" text-anchor="middle" class="subtitle">Data & Cache Layer</text>
+
+    <!-- PostgreSQL -->
+    <rect x="50" y="340" width="200" height="120" rx="8" fill="url(#grad-database)" stroke="#805ad5" stroke-width="2" />
+    <text x="150" y="365" text-anchor="middle" class="text" fill="#553c9a">PostgreSQL 18</text>
+    <text x="150" y="385" text-anchor="middle" class="small-text">Source of Truth</text>
+    <text x="150" y="400" text-anchor="middle" class="small-text">Prisma ORM</text>
+    <text x="150" y="415" text-anchor="middle" class="small-text">Tables: participants, votes</text>
+    <text x="150" y="430" text-anchor="middle" class="small-text">Migrations • Seed Data</text>
+    <text x="150" y="445" text-anchor="middle" class="small-text">Port: 5432</text>
+
+    <!-- Redis -->
+    <rect x="280" y="340" width="200" height="120" rx="8" fill="url(#grad-messaging)" stroke="#ed8936"
+        stroke-width="2" />
+    <text x="380" y="365" text-anchor="middle" class="text" fill="#c05621">Redis 7</text>
+    <text x="380" y="385" text-anchor="middle" class="small-text">Cache In-Memory</text>
+    <text x="380" y="400" text-anchor="middle" class="small-text">Contadores de Votos</text>
+    <text x="380" y="415" text-anchor="middle" class="small-text">Rate Limiting TTL</text>
+    <text x="380" y="430" text-anchor="middle" class="small-text">Performance ~1ms</text>
+    <text x="380" y="445" text-anchor="middle" class="small-text">Port: 6379</text>
+
+    <!-- Prisma -->
+    <rect x="510" y="340" width="200" height="120" rx="8" fill="url(#grad-infrastructure)" stroke="#718096"
+        stroke-width="2" />
+    <text x="610" y="365" text-anchor="middle" class="text" fill="#4a5568">Prisma ORM</text>
+    <text x="610" y="385" text-anchor="middle" class="small-text">Schema Management</text>
+    <text x="610" y="400" text-anchor="middle" class="small-text">Type-Safe Queries</text>
+    <text x="610" y="415" text-anchor="middle" class="small-text">Migrations • Seed</text>
+    <text x="610" y="430" text-anchor="middle" class="small-text">Studio GUI</text>
+    <text x="610" y="445" text-anchor="middle" class="small-text">Port: 5555 (Studio)</text>
+
+    <!-- Shared Library -->
+    <rect x="50" y="520" width="660" height="100" rx="10" fill="url(#grad-infrastructure)" stroke="#718096"
+        stroke-width="2" />
+    <text x="380" y="545" text-anchor="middle" class="subtitle" fill="#4a5568">Shared Library
+        (@laager-bbb-voting-system/common)</text>
+    <text x="380" y="570" text-anchor="middle" class="small-text">DTOs: VoteDto • VoteResponseDto • ResultsResponseDto •
+        HourlyStatsDto</text>
+    <text x="380" y="585" text-anchor="middle" class="small-text">Interfaces: Participant • Vote • Stats</text>
+    <text x="380" y="600" text-anchor="middle" class="small-text">Validações: class-validator decorators • Swagger
+        @ApiProperty</text>
+
+    <!-- Infrastructure Services -->
+    <rect x="50" y="660" width="280" height="100" rx="10" fill="url(#grad-infrastructure)" stroke="#718096"
+        stroke-width="2" />
+    <text x="190" y="685" text-anchor="middle" class="subtitle" fill="#4a5568">Infrastructure</text>
+    <text x="190" y="705" text-anchor="middle" class="small-text">Docker Compose</text>
+    <text x="190" y="720" text-anchor="middle" class="small-text">Nx Monorepo Workspace</text>
+    <text x="190" y="735" text-anchor="middle" class="small-text">TypeScript • ESLint • Prettier</text>
+    <text x="190" y="750" text-anchor="middle" class="small-text">Environment Variables</text>
+
+    <!-- Monitoring & Tools -->
+    <rect x="360" y="660" width="280" height="100" rx="10" fill="url(#grad-infrastructure)" stroke="#718096"
+        stroke-width="2" />
+    <text x="500" y="685" text-anchor="middle" class="subtitle" fill="#4a5568">Monitoring & Tools</text>
+    <text x="500" y="705" text-anchor="middle" class="small-text">Winston Logger</text>
+    <text x="500" y="720" text-anchor="middle" class="small-text">Swagger UI (API Docs)</text>
+    <text x="500" y="735" text-anchor="middle" class="small-text">RabbitMQ Management UI</text>
+    <text x="500" y="750" text-anchor="middle" class="small-text">Prisma Studio</text>
+
+    <!-- Anti-Bot Protection -->
+    <rect x="670" y="660" width="280" height="100" rx="10" fill="url(#grad-gateway)" stroke="#e53e3e"
+        stroke-width="2" />
+    <text x="810" y="685" text-anchor="middle" class="subtitle" fill="#c53030">🛡️ Anti-Bot Protection</text>
+    <text x="810" y="705" text-anchor="middle" class="small-text">Rate Limiting Middleware</text>
+    <text x="810" y="720" text-anchor="middle" class="small-text">10 votos/minuto por IP</text>
+    <text x="810" y="735" text-anchor="middle" class="small-text">Redis TTL Storage</text>
+    <text x="810" y="750" text-anchor="middle" class="small-text">HTTP 429 Response</text>
+
+    <!-- Performance Metrics -->
+    <rect x="980" y="660" width="280" height="100" rx="10" fill="url(#grad-microservice)" stroke="#38a169"
+        stroke-width="2" />
+    <text x="1120" y="685" text-anchor="middle" class="subtitle" fill="#2f855a">⚡ Performance</text>
+    <text x="1120" y="705" text-anchor="middle" class="small-text">1000+ votos/segundo</text>
+    <text x="1120" y="720" text-anchor="middle" class="small-text">Response Time: ~5ms</text>
+    <text x="1120" y="735" text-anchor="middle" class="small-text">Redis Cache: ~1ms</text>
+    <text x="1120" y="750" text-anchor="middle" class="small-text">Async Processing</text>
+
+    <!-- Technology Stack -->
+    <text x="700" y="820" text-anchor="middle" class="subtitle">Core Technologies & Features</text>
+
+    <rect x="50" y="840" width="1300" height="120" rx="8" fill="#ffffff" stroke="#cbd5e0" stroke-width="1.5" />
+
+    <text x="70" y="865" class="text">Frontend:</text>
+    <text x="70" y="885" class="small-text">Next.js 15 • React 19 • TypeScript • Tailwind CSS • shadcn/ui • TanStack
+        Query • Axios</text>
+
+    <text x="70" y="910" class="text">Backend:</text>
+    <text x="70" y="930" class="small-text">NestJS 11 • Node.js 20 • RabbitMQ • Prisma 6 • PostgreSQL 18 • Redis
+        7</text>
+
+    <text x="750" y="865" class="text">Endpoints:</text>
+    <text x="750" y="885" class="small-text">POST /votes • GET /votes • GET /votes/stats/hourly</text>
+
+    <text x="750" y="910" class="text">Features:</text>
+    <text x="750" y="930" class="small-text">Rate Limiting • IP Tracking • Event-Driven • Real-time Stats • Auto-scaling
+        Ready</text>
+
+    <!-- Connection Lines -->
+    <!-- Frontend to Gateway -->
+    <line x1="330" y1="170" x2="450" y2="170" class="arrow" />
+    <text x="390" y="165" text-anchor="middle" class="small-text">HTTP REST</text>
+
+    <!-- Gateway to RabbitMQ -->
+    <line x1="750" y1="170" x2="900" y2="170" class="async-flow" />
+    <text x="825" y="165" text-anchor="middle" class="small-text">Publish (Async)</text>
+
+    <!-- RabbitMQ to Vote Service -->
+    <line x1="1025" y1="240" x2="1025" y2="320" class="async-flow" />
+    <text x="1060" y="280" text-anchor="middle" class="small-text">Consume</text>
+
+    <!-- Gateway to Vote Service (Request/Reply) -->
+    <line x1="750" y1="200" x2="900" y2="380" class="arrow" />
+    <text x="820" y="285" text-anchor="middle" class="small-text">Request/Reply</text>
+
+    <!-- Vote Service to PostgreSQL -->
+    <line x1="900" y1="400" x2="250" y2="400" class="data-flow" />
+    <text x="575" y="395" text-anchor="middle" class="small-text">Persist Votes</text>
+
+    <!-- Vote Service to Redis -->
+    <line x1="900" y1="420" x2="480" y2="400" class="data-flow" />
+    <text x="690" y="405" text-anchor="middle" class="small-text">Update Cache</text>
+
+    <!-- Gateway Rate Limiting to Redis -->
+    <line x1="550" y1="240" x2="380" y2="340" class="data-flow" />
+    <text x="465" y="285" text-anchor="middle" class="small-text">Rate Check</text>
+
+    <!-- Prisma to PostgreSQL -->
+    <line x1="560" y1="400" x2="250" y2="400" class="data-flow" />
+    <text x="405" y="395" text-anchor="middle" class="small-text">ORM</text>
+
+    <!-- Legend -->
+    <rect x="50" y="970" width="700" height="25" rx="5" fill="#ffffff" stroke="#cbd5e0" stroke-width="1.5" />
+    <text x="60" y="987" class="text">Legend:</text>
+    <line x1="120" y1="982" x2="150" y2="982" class="arrow" />
+    <text x="155" y="987" class="small-text">HTTP Sync</text>
+
+    <line x1="240" y1="982" x2="270" y2="982" class="async-flow" />
+    <text x="275" y="987" class="small-text">Async Queue</text>
+
+    <line x1="370" y1="982" x2="400" y2="982" class="data-flow" />
+    <text x="405" y="987" class="small-text">Data Flow</text>
+
+    <rect x="490" y="975" width="15" height="15" fill="#ebf8ff" stroke="#3182ce" stroke-width="1.5" />
+    <text x="510" y="987" class="small-text">Frontend</text>
+
+    <rect x="580" y="975" width="15" height="15" fill="#fff5f5" stroke="#e53e3e" stroke-width="1.5" />
+    <text x="600" y="987" class="small-text">Gateway</text>
+
+    <rect x="670" y="975" width="15" height="15" fill="#f0fff4" stroke="#38a169" stroke-width="1.5" />
+    <text x="690" y="987" class="small-text">Microservice</text>
+
+    <!-- Vote Flow Annotation -->
+    <text x="1200" y="100" class="small-text">Fluxo de Voto:</text>
+    <text x="1200" y="120" class="small-text">1. Frontend → Gateway (POST /votes)</text>
+    <text x="1200" y="135" class="small-text">2. Rate Limit Check (Redis)</text>
+    <text x="1200" y="150" class="small-text">3. Publish → RabbitMQ (5ms)</text>
+    <text x="1200" y="165" class="small-text">4. Vote Service Consume</text>
+    <text x="1200" y="180" class="small-text">5. Validate + Persist (Postgres)</text>
+    <text x="1200" y="195" class="small-text">6. Update Cache (Redis)</text>
+    <text x="1200" y="210" class="small-text">7. Frontend → GET /votes</text>
+    <text x="1200" y="225" class="small-text">8. Show Results + %</text>
+</svg>
