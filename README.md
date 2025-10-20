@@ -158,6 +158,7 @@ npm run dev            # Modo desenvolvimento com hot-reload
 ```bash
 npm run start:gateway  # API Gateway (porta 3000)
 npm run start:votes    # Vote Service (microserviço)
+npm run start:backend  # Inicia ambos (Gateway + Vote Service)
 ```
 
 ### Frontend
@@ -461,14 +462,14 @@ laager-bbb-voting-system/
 
 ### Desenvolvimento
 
-| Script                    | Descrição                           |
-| ------------------------- | ----------------------------------- |
-| `npm run start:dev`       | ⭐ Inicia TUDO (backend + frontend) |
-| `npm run start:backend`   | Inicia apenas serviços backend      |
-| `npm run start:web`       | Inicia frontend                     |
-| `npm run start:gateway`   | Inicia apenas API Gateway           |
-| `npm run start:votes`     | Inicia apenas Votes Service         |
-| `npm run start:aggregate` | Inicia apenas Aggregate Service     |
+| Script                    | Descrição                                   |
+| ------------------------- | ------------------------------------------- |
+| `npm run start:dev`       | ⭐ Inicia TUDO (Gateway + Votes + Frontend) |
+| `npm run start:backend`   | Inicia apenas backend (Gateway + Votes)     |
+| `npm run start:web`       | Inicia apenas frontend                      |
+| `npm run start:gateway`   | Inicia apenas API Gateway                   |
+| `npm run start:votes`     | Inicia apenas Vote Service                  |
+| `npm run start:aggregate` | Inicia apenas Aggregate Service             |
 
 ### Build
 
