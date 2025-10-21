@@ -1,11 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { votingApi } from '../../services/voting.service';
+import { votingService } from '../../services/voting.service';
 
 export function useParticipantsQuery() {
     return useQuery({
         queryKey: ['participants'],
         queryFn: async () => {
-            const results = await votingApi.getResults();
+            const results = await votingService.getResults();
+            if (!results) {
+                return [];
+            }
             return results.results.map((result) => ({
                 id: result.participantId,
                 name: result.name,

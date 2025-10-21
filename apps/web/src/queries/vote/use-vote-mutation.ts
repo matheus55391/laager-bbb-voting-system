@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { votingApi } from '../../services/voting.service';
+import { votingService } from '../../services/voting.service';
 import type { SubmitVoteRequest } from '../../services/voting.service.dto';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
@@ -13,7 +13,7 @@ export function useVoteMutation() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: SubmitVoteRequest) => votingApi.submitVote(data),
+        mutationFn: (data: SubmitVoteRequest) => votingService.submitVote(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['voting-results'] });
             queryClient.invalidateQueries({ queryKey: ['participants'] });

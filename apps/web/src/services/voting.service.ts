@@ -1,4 +1,5 @@
-import apiClient from '../lib/api-client';
+import { baseApiInstance } from '../lib/axios';
+import { BackendApiService } from './backend-api-service';
 import type {
     SubmitVoteRequest,
     SubmitVoteResponse,
@@ -6,37 +7,47 @@ import type {
     GetFormattedResultsResponse,
 } from './voting.service.dto';
 
-export const votingApi = {
-    submitVote: async (
+export class VotingService extends BackendApiService {
+    private readonly baseEndpoint = 'votes';
+
+    async submitVote(
         data: SubmitVoteRequest
-    ): Promise<SubmitVoteResponse> => {
-        const response = await apiClient.post<SubmitVoteResponse>(
-            '/votes',
+    ): Promise<SubmitVoteResponse | undefined> {
+        const response = await this.post<SubmitVoteRequest, SubmitVoteResponse>(
+            this.baseEndpoint,
             data
         );
         return response.data;
-    },
+    }
 
-    getResults: async (): Promise<GetResultsResponse> => {
-        const response = await apiClient.get<GetResultsResponse>(
-            '/votes/results'
+    async getResults(): Promise<GetResultsResponse | undefined> {
+        const response = await this.get<GetResultsResponse>(
+            `${this.baseEndpoint}/results`
         );
         return response.data;
-    },
+    }
 
-    getFormattedResults: async (): Promise<GetFormattedResultsResponse> => {
-        const response = await votingApi.getResults();
+    async getFormattedResults(): Promise<
+        GetFormattedResultsResponse | undefined
+    > {
+        const results = await this.getResults();
+
+        if (!results) {
+            return undefined;
+        }
 
         return {
-            totalVotes: response.totalVotes,
-            participants: response.results.map((result) => ({
+            totalVotes: results.totalVotes,
+            participants: results.results.map((result) => ({
                 id: result.participantId,
                 name: result.name,
                 votes: result.votes,
                 percentage: result.percentage,
                 imageUrl: undefined,
             })),
-            lastUpdated: response.lastUpdated,
+            lastUpdated: results.lastUpdated,
         };
-    },
-};
+    }
+}
+
+export const votingService = new VotingService(baseApiInstance);

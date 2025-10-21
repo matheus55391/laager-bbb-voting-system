@@ -5,29 +5,11 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // transpilePackages: [
-  //   '@fullcalendar/common',
-  //   '@fullcalendar/daygrid',
-  //   '@fullcalendar/interaction',
-  //   '@fullcalendar/react',
-  //   '@fullcalendar/timegrid',
-  // ],
-
   experimental: {
     forceSwcTransforms: true,
   },
 
   webpack: (config, { isServer, webpack }) => {
-    // Let Next.js handle CSS files instead of injecting them at runtime with style-loader.
-    // Removing the custom rule avoids runtime CSS injection which can cause a flash-of-unstyled-content
-    // (FOUC) or delayed CSS on reload. Next.js has built-in support for global and modular CSS.
-    // config.module = config.module || {}
-    // config.module.rules = config.module.rules || []
-
-    // config.module.rules.push({
-    //   test: /\.css$/,
-    //   use: ['style-loader', 'css-loader', 'postcss-loader'],
-    // })
 
     if (!isServer) {
       config.resolve.fallback = {
