@@ -5,9 +5,17 @@ import { HealthController } from './controllers/health.controller';
 import { VotesController } from './controllers/votes.controller';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
     imports: [
+        ThrottlerModule.forRoot([
+            {
+                ttl: 600000,
+                limit: 1,
+            },
+        ]),
         ClientsModule.register([
             {
                 name: 'RABBITMQ_SERVICE',
@@ -27,7 +35,12 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
         }),
     ],
     controllers: [HealthController, VotesController],
-    providers: [],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

@@ -5,10 +5,8 @@ import { AppService } from './app.service';
 import { PrismaService } from './services/prisma.service';
 import { RedisService } from './services/redis.service';
 import { VotesService } from './services/votes.service';
-
 @Module({
     imports: [
-        // Cliente RabbitMQ para publicar eventos (vote.processed)
         ClientsModule.register([
             {
                 name: 'EVENTS_SERVICE',

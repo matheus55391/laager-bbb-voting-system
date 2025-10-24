@@ -19,6 +19,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { firstValueFrom, timeout } from 'rxjs';
 import { Request } from 'express';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('votes')
 @Controller('votes')
@@ -29,6 +30,7 @@ export class VotesController {
         @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy
     ) {}
 
+    @Throttle({ default: { limit: 1, ttl: 600000 } })
     @Post()
     @ApiOperation({ summary: 'Registrar um novo voto' })
     @ApiResponse({
