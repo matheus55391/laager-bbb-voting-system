@@ -62,9 +62,7 @@ export class VotesController {
                 userAgent,
             };
 
-            this.logger.log(
-                `Vote details - User-Agent: ${userAgent}`
-            );
+            this.logger.log(`Vote details - User-Agent: ${userAgent}`);
 
             this.rabbitClient.emit('vote.create', enrichedVoteDto);
 
