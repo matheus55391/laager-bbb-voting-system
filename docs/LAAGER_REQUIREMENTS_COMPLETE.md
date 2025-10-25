@@ -42,7 +42,7 @@
 
 -   **IP Address**: Extraído de `X-Forwarded-For` ou `req.ip`
 -   **User-Agent**: Capturado do header HTTP
--   **Persistência**: Ambos salvos na tabela `votes` (colunas `ip_address` e `user_agent`)
+-   **Persistência**: Ambos salvos na tabela `votes` (coluna `user_agent`)
 -   **Análise futura**: Permite detecção de padrões suspeitos
 
 #### **Como funciona**:
@@ -134,7 +134,6 @@ apps/api/api-gateway/src/app/middleware/rate-limit.middleware.ts
 libs/common/src/lib/vote/dto/vote.dto.ts
 ```
 
--   Adicionados campos opcionais `ipAddress` e `userAgent`
 -   Preenchidos automaticamente pelo servidor
 
 #### 3. **VotesController captura IP**
@@ -153,7 +152,6 @@ apps/api/api-gateway/src/app/controllers/votes.controller.ts
 apps/api/vote/src/app/services/votes.service.ts
 ```
 
--   Salva `ipAddress` e `userAgent` no Postgres
 -   Permite análise de padrões futuros
 
 #### 5. **AppModule registra middleware**
@@ -242,7 +240,7 @@ curl http://localhost:3000/api/votes/stats/hourly | jq
 ### **Teste 3: Verificar IP no Banco**
 
 ```sql
-SELECT ip_address, user_agent, created_at
+SELECT user_agent, created_at
 FROM votes
 ORDER BY created_at DESC
 LIMIT 10;

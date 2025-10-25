@@ -20,15 +20,6 @@ export class VoteDto {
     userId?: string;
 
     @ApiProperty({
-        description: 'Endereço IP do votante (preenchido pelo servidor)',
-        example: '192.168.1.1',
-        required: false,
-    })
-    @IsOptional()
-    @IsString()
-    ipAddress?: string;
-
-    @ApiProperty({
         description: 'User-Agent do navegador (preenchido pelo servidor)',
         example: 'Mozilla/5.0...',
         required: false,

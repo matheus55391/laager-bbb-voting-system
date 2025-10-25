@@ -16,7 +16,6 @@ CREATE TABLE "votes" (
     "id" TEXT NOT NULL,
     "participant_id" TEXT NOT NULL,
     "user_id" VARCHAR(255),
-    "ip_address" INET,
     "user_agent" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -34,9 +33,6 @@ CREATE INDEX "votes_created_at_idx" ON "votes"("created_at");
 
 -- CreateIndex
 CREATE INDEX "votes_user_id_idx" ON "votes"("user_id");
-
--- CreateIndex
-CREATE INDEX "votes_ip_address_idx" ON "votes"("ip_address");
 
 -- AddForeignKey
 ALTER TABLE "votes" ADD CONSTRAINT "votes_participant_id_fkey" FOREIGN KEY ("participant_id") REFERENCES "participants"("id") ON DELETE CASCADE ON UPDATE CASCADE;

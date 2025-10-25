@@ -102,7 +102,6 @@ export class VoteDto {
     })
     @IsOptional()
     @IsString()
-    ipAddress?: string;
 
     @ApiProperty({
         description: 'User-Agent do navegador (preenchido pelo servidor)',
@@ -129,18 +128,15 @@ async vote(@Body() voteDto: VoteDto) {
 
 -   ✅ `participantId`: Obrigatório, string
 -   ⚪ `userId`: Opcional
--   🛡️ `ipAddress`: Opcional (preenchido pelo servidor)
 -   🛡️ `userAgent`: Opcional (preenchido pelo servidor)
 
 **Campos Anti-Bot**:
 
--   `ipAddress` e `userAgent` são capturados automaticamente no controller:
 
 ```typescript
 const clientIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 const userAgent = req.headers['user-agent'];
 
-voteDto.ipAddress = clientIp as string;
 voteDto.userAgent = userAgent;
 ```
 
@@ -519,7 +515,6 @@ Frontend (Web)
 API Gateway (VotesController)
     │
     │ Valida com VoteDto
-    │ Adiciona ipAddress + userAgent
     │
     │ RabbitMQ: vote.create
     ▼
@@ -566,7 +561,6 @@ Frontend (Web)
 ```
 1. Frontend envia: { participantId: "uuid-123" }
 2. API Gateway valida com VoteDto
-3. API Gateway adiciona ipAddress + userAgent
 4. RabbitMQ envia para Vote Service
 5. Vote Service processa e retorna VoteResponseDto
 6. API Gateway retorna ao Frontend

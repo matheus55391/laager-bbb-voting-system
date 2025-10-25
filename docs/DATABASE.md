@@ -93,7 +93,6 @@ model Vote {
   id            String   @id @default(uuid())
   participantId String   @map("participant_id")
   userId        String?  @map("user_id") @db.VarChar(255)
-  ipAddress     String?  @map("ip_address") @db.Inet
   userAgent     String?  @map("user_agent") @db.Text
   createdAt     DateTime @default(now()) @map("created_at")
 
@@ -106,7 +105,6 @@ model Vote {
   @@index([participantId])
   @@index([createdAt])
   @@index([userId])
-  @@index([ipAddress])
   @@map("votes")
 }
 ```
@@ -118,7 +116,6 @@ model Vote {
 | `id`            | UUID     | PK, Auto-generated               | Identificador único do voto    |
 | `participantId` | UUID     | FK → Participant, Indexed        | Quem recebeu o voto            |
 | `userId`        | String?  | Max 255 chars, NULLABLE, Indexed | ID do votante (se autenticado) |
-| `ipAddress`     | INET?    | NULLABLE, Indexed                | 🛡️ IP do votante (anti-bot)    |
 | `userAgent`     | String?  | NULLABLE                         | 🛡️ User-Agent do navegador     |
 | `createdAt`     | DateTime | Auto-generated, Indexed          | Timestamp do voto              |
 
@@ -134,7 +131,6 @@ model Vote {
 | `idx_participantId` | `participantId` | JOIN com participants                     |
 | `idx_createdAt`     | `createdAt`     | Queries temporais (estatísticas por hora) |
 | `idx_userId`        | `userId`        | Anti-fraude (limite por usuário)          |
-| `idx_ipAddress`     | `ipAddress`     | 🛡️ Rate limiting (10 votos/min por IP)    |
 
 #### SQL Equivalente
 
@@ -143,7 +139,6 @@ CREATE TABLE votes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
   user_id VARCHAR(255),
-  ip_address INET,
   user_agent TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -151,7 +146,6 @@ CREATE TABLE votes (
 CREATE INDEX idx_votes_participant_id ON votes(participant_id);
 CREATE INDEX idx_votes_created_at ON votes(created_at);
 CREATE INDEX idx_votes_user_id ON votes(user_id);
-CREATE INDEX idx_votes_ip_address ON votes(ip_address);
 ```
 
 ---
@@ -192,7 +186,6 @@ prisma/migrations/
 │   └── migration.sql          # Tabelas participants e votes
 │
 └── 20240102000000_add_anti_bot_fields/
-    └── migration.sql          # Adição de ipAddress e userAgent
 ```
 
 ---
@@ -321,7 +314,6 @@ const results = await prisma.vote.groupBy({
 ```typescript
 const votesFromIp = await prisma.vote.count({
     where: {
-        ipAddress: '192.168.1.1',
         createdAt: {
             gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
         },
@@ -476,7 +468,6 @@ await prisma.$transaction(async (tx) => {
 
 ```prisma
 @@index([createdAt])  // Para queries temporais
-@@index([ipAddress])  // Para anti-bot
 ```
 
 ### 3. Validar Foreign Keys

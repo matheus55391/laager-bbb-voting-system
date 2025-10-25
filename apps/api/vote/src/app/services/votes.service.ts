@@ -47,7 +47,6 @@ export class VotesService {
                 data: {
                     participantId: voteDto.participantId,
                     userId: voteDto.userId,
-                    ipAddress: voteDto.ipAddress || null,
                     userAgent: voteDto.userAgent || null,
                 },
             });

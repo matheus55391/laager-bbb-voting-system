@@ -55,20 +55,15 @@ export class VotesController {
         );
 
         try {
-            const ipAddress =
-                (req.headers['x-forwarded-for'] as string)?.split(',')[0] ||
-                req.ip ||
-                'unknown';
             const userAgent = req.headers['user-agent'] || 'unknown';
 
             const enrichedVoteDto: VoteDto = {
                 ...voteDto,
-                ipAddress,
                 userAgent,
             };
 
             this.logger.log(
-                `Vote details - IP: ${ipAddress}, User-Agent: ${userAgent}`
+                `Vote details - User-Agent: ${userAgent}`
             );
 
             this.rabbitClient.emit('vote.create', enrichedVoteDto);

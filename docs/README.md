@@ -267,7 +267,6 @@ docker exec -it laager-postgres psql -U laager_user -d laager_voting
 # Query:
 SELECT
   participant_id,
-  ip_address,
   user_agent,
   created_at
 FROM votes

@@ -155,7 +155,6 @@ O BBB Voting System utiliza uma arquitetura de **microserviços event-driven** c
 │  ├─ 2. Save vote            │
 │  │    └─ Prisma.vote.create │
 │  │       • participantId    │
-│  │       • ipAddress ✅     │
 │  │       • userAgent ✅     │
 │  │                          │
 │  ├─ 3. Update cache         │
@@ -291,15 +290,14 @@ Frontend → API Gateway → Vote Service
 
 ```
 Tables:
-┌──────────────┐     ┌──────────┐
-│ participants │ 1━N │  votes   │
-├──────────────┤     ├──────────┤
-│ id (UUID)    │◄────│ id       │
-│ name         │     │ participant_id
-│ nickname     │     │ ip_address ✅
-│ isActive     │     │ user_agent ✅
-│ createdAt    │     │ createdAt
-└──────────────┘     └──────────┘
+┌──────────────┐     ┌────────────────┐
+│ participants │ 1━N │  votes         │
+├──────────────┤     ├────────────────┤
+│ id (UUID)    │◄────│ id             │
+│ name         │     │ participant_id │
+│ nickname     │     │ user_agent     │
+│ isActive     │     │ createdAt      │
+└──────────────┘     └────────────────┘
 ```
 
 ### 2. Redis (Cache Layer)

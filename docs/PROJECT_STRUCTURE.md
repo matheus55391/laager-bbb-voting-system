@@ -362,7 +362,6 @@ model Vote {
   id            String   @id @default(uuid())
   participantId String
   userId        String?
-  ipAddress     String?  @db.Inet
   userAgent     String?
   createdAt     DateTime @default(now())
 
@@ -370,7 +369,6 @@ model Vote {
 
   @@index([participantId])
   @@index([createdAt])
-  @@index([ipAddress])
   @@map("votes")
 }
 ```

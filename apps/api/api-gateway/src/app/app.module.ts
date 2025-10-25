@@ -4,7 +4,6 @@ import { HttpModule } from '@nestjs/axios';
 import { HealthController } from './controllers/health.controller';
 import { VotesController } from './controllers/votes.controller';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -12,8 +11,8 @@ import { APP_GUARD } from '@nestjs/core';
     imports: [
         ThrottlerModule.forRoot([
             {
-                ttl: 600000,
-                limit: 1,
+                ttl: 60000,
+                limit: 10,
             },
         ]),
         ClientsModule.register([
@@ -46,8 +45,6 @@ export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(LoggerMiddleware)
-            .forRoutes('*')
-            .apply(RateLimitMiddleware)
-            .forRoutes('votes'); // Aplicar rate limiting apenas em rotas de votação
+            .forRoutes('*');
     }
 }
